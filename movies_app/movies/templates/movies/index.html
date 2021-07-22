@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+
+<ul id="list-group">
+    {% for movie in movies %}
+       <li class="list-group-item">
+          <a href = "/movies/{{movie.id}}">
+               ID: {{movie.id}} - Title : {{ movie.title}}
+          </a>
+       </li>
+    {% endfor %}
+ </ul>
+
+{% endblock %}
