@@ -14,6 +14,7 @@ edit movies_app/.env file to define
 ```vim
 SECRET_KEY='test123'
 DATABASE_URL=sqlite:///./db.sqlite3
+ALLOWED_HOSTS=127.0.0.1,localhost
 ```
 # run development server
 ```bash
