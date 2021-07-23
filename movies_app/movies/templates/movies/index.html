@@ -2,14 +2,17 @@
 
 {% block body_block %}
 
+<h3>Welcome to our movies app.</h3><br><h4> Panagiotis Bellias 21871 Pavlos Andreou 218110.</h4>
+{% if movies %}
 <ul id="list-group">
     {% for movie in movies %}
        <li class="list-group-item">
           <a href = "/movies/{{movie.id}}">
-               ID: {{movie.id}} - Title : {{ movie.title}}
+               <li>ID: {{movie.id}}</li><li>Title : {{ movie.title}}</li>
           </a>
        </li>
     {% endfor %}
  </ul>
 
+{% endif %}
 {% endblock %}
