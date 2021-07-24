@@ -2,17 +2,34 @@
 
 {% block body_block %}
 
-<h3>Welcome to our movies app.</h3><br><h4> Panagiotis Bellias 21871 Pavlos Andreou 218110.</h4>
+<h3>Welcome to our movies app.</h3><br><h4> Panagiotis Bellias 21871 / Pavlos Andreou 218110</h4>
 {% if movies %}
-<ul id="list-group">
+   <table border="1">
+      <tr>
+         <th>ID</th>
+         <th>Title</th>
+         <th>Director</th>
+         <th>Actors</th>
+         <th>Genre</th>
+         <th>Release Date</th>
+         <th>Rating (0-10)</th>
+         <th>Options</th>
+      </tr>
     {% for movie in movies %}
-       <li class="list-group-item">
-          <a href = "/movies/{{movie.id}}">
-               <li>ID: {{movie.id}}</li><li>Title : {{ movie.title}}</li>
-          </a>
-       </li>
+    <tr>
+          
+            <th>{{ movie.id }}</th>
+            <th>{{ movie.title }}</th>
+            <th>{{ movie.director }}</th>
+            <th>{{ movie.actors }}</th>
+            <th>{{ movie.genre }}</th>
+            <th>{{ movie.release_date }}</th>
+            <th>{{ movie.rating }}</th>
+            <th><a href = "/movies/{{movie.id}}">View</a></th>
+         </tr>
     {% endfor %}
- </ul>
-
+   </table>
+ {% else %}
+ <p>No movies are available</p>
 {% endif %}
 {% endblock %}

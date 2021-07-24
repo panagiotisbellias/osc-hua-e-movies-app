@@ -2,7 +2,24 @@
 
 {% block body_block %}
 
-<h1>{{ movie.title }}</h1>
-{{ movie.actors }}
+<div class="row">
+    <div class="col-md-8 col-sm-10 col-12">
+        <h1>{{ movie.title }}</h1>
+
+        {% if error_message %}
+        <p><strong>{{ error_message }}</strong></p>
+        {% endif %}
+
+        <table border="1">
+            <tr><th>ID</th><td>{{ movie.id }}</td></tr>
+            <tr><th>Title</th><td>{{ movie.title }}</td></tr>
+            <tr><th>Director</th><td>{{ movie.director }}</td></tr>
+            <tr><th>Actors</th><td>{{ movie.actors }}</td></tr>
+            <tr><th>Genre</th><td>{{ movie.genre }}</td></tr>
+            <tr><th>Release Date</th><td>{{ movie.release_date }}</td></tr>
+            <tr><th>Current Rating</th><td>{{ movie.rating }}</td></tr>
+        </table>
+    </div>
+</div>
 
 {% endblock %}
