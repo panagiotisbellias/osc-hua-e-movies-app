@@ -22,3 +22,17 @@ def rate(request, movie_id):
     movie.rating = round((float(movie.rating) + float(selected_rating)) / 2, 1)
     movie.save()
     return HttpResponseRedirect(reverse('index'))
+
+def create(request):
+    return render(request, 'movies/add.html')
+
+def new_movie(request):
+    movie = Movies(title = request.POST.get("title"), director = request.POST.get("director"), actors = request.POST.get('actors'),
+    genre = request.POST.get('genre'), release_date = request.POST.get('release_date'), rating = 0.0
+    )
+    movie.save()
+    movie = get_object_or_404(Movies, pk=movie.id)
+    if movie:
+        return HttpResponseRedirect(reverse('index'))
+    else:
+        return HttpResponseRedirect(reverse('create'))

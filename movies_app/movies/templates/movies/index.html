@@ -3,6 +3,7 @@
 {% block body_block %}
 
 <h3>Welcome to our movies app.</h3><br><h4> Panagiotis Bellias 21871 / Pavlos Andreou 218110</h4>
+<a href="{% url 'create' %}" class="btn btn-student btn-lg" role="button">Add New Movie</a>
 {% if movies %}
    <table border="1">
       <tr>
