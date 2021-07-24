@@ -19,6 +19,19 @@
             <tr><th>Release Date</th><td>{{ movie.release_date }}</td></tr>
             <tr><th>Current Rating</th><td>{{ movie.rating }}</td></tr>
         </table>
+        <br>
+        <h2> Do you want to rate the movie? </h2>
+        <br>
+        <form action="{% url 'rate' movie.id %}" method="post">
+            {% csrf_token %}
+                <input type="radio" name="rating" id="rating{{ 0 }}" value="{{ 0 }}">
+                <label for="rating{{ 0 }}">{{ 0 }}</label>
+                {% for i in "x"|rjust:"10" %}
+                    <input type="radio" name="rating" id="rating{{ forloop.counter }}" value="{{ forloop.counter }}">
+                    <label for="rating{{ forloop.counter }}">{{ forloop.counter }}</label>
+                {% endfor %}
+                <br><br><input type="submit" class="btn btn-success" value="Rate">
+        </form>
     </div>
 </div>
 
