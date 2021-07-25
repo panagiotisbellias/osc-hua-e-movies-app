@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+	<h2>Welcome to the e-movies! <span class="icon-emo-happy"></span></h2>
+	<p class="lead">
+		<a href="{% url 'index' %}">Start</a>
+    </p>
+  	<hr>
+  	<h3>What's this about?</h3>
+  	<p>
+    		This Django application is for the semester exercise in the context of 'Basic DevOps Concepts and Tools' course at 
+                <a href="https://www.dit.hua.gr/index.php/en/">DIT HUA</a>.
+    		In this application, users can sign up as a viewer or a manager. Managers can create and delete movies and viewers can view and rate movies.
+	</p>
+  	<p>Want to run this code locally? <a href="https://github.com/panagiotisbellias/e-movies-app/blob/main/README.md">Read detailed instructions on how to run this project</a>.</p>
+  	<p class="mb-0">Panagiotis Bellias<br>
+		<a href="https://www.facebook.com/BelliasPanayiotis">Find me on Facebook</a><br>
+		<a href="https://www.instagram.com/bel_panos/">@bel_panos (Instagram)</a><br>
+	</p><br>
+	<p class="mb-0">Pavlos Andreou<br>
+	</p><br>
+{% endblock %}

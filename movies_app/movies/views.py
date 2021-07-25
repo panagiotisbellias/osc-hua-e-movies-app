@@ -3,6 +3,9 @@ from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 from .models import Movies
 
+def home(request):
+    return render(request, 'movies/home.html')
+
 def index(request):
     data = Movies.objects.all()
     context = {'movies': data}
