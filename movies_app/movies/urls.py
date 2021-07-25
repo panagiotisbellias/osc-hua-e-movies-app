@@ -9,4 +9,5 @@ urlpatterns = [
     path('movies/create/', views.create, name='create'),
     path('movies/new_movie', views.new_movie, name='new_movie'),
     path('movies/<int:movie_id>/delete/', views.delete, name='delete'),
+    path('movies/suggestions/', views.suggested, name='create_from_api'),
 ]

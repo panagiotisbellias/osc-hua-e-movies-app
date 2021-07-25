@@ -43,3 +43,9 @@ def delete(request, movie_id):
     del movie_instance
     Movies.objects.get(id=movie_id).delete()
     return HttpResponseRedirect(reverse('index'))
+
+def suggested(request):
+
+    # https://api.trakt.tv
+    # https://developer.imdb.com/?ref=ft_ds 
+    pass
