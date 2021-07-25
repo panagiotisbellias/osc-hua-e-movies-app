@@ -36,3 +36,10 @@ def new_movie(request):
         return HttpResponseRedirect(reverse('index'))
     else:
         return HttpResponseRedirect(reverse('create'))
+
+def delete(request, movie_id):
+
+    movie_instance = get_object_or_404(Movies, pk=movie_id)
+    del movie_instance
+    Movies.objects.get(id=movie_id).delete()
+    return HttpResponseRedirect(reverse('index'))

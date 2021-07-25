@@ -32,6 +32,10 @@
                 {% endfor %}
                 <br><br><input type="submit" class="btn btn-success" value="Rate">
         </form>
+        <br>
+        <h2> Are you sure you want to delete this movie? </h2>
+        <br>
+        <p><a href="{% url 'delete' movie.id %}">yes</a></p><p><b><a href="{% url 'index' %}">No</a></b></p>
     </div>
 </div>
 
