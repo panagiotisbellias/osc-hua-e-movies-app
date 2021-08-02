@@ -3,7 +3,8 @@
 {% block body_block %}
 	<h2>Welcome to the e-movies! <span class="icon-emo-happy"></span></h2>
 	<p class="lead">
-		<a href="{% url 'index' %}">Start</a>
+		If you already have an account, go ahead and <a href="{% url 'login' %}">log in</a>. If you are new to e-movies, get started
+    		by creating a <a href="{% url 'viewer_signup' %}">viewer account</a> or a <a href="{% url 'manager_signup' %}">manager account</a>.
     </p>
   	<hr>
   	<h3>What's this about?</h3>
@@ -18,5 +19,7 @@
 		<a href="https://www.instagram.com/bel_panos/">@bel_panos (Instagram)</a><br>
 	</p><br>
 	<p class="mb-0">Pavlos Andreou<br>
+		<a href="https://www.facebook.com/profile.php?id=100008216979261">Find me on Facebook</a><br>
+		<a href="https://www.instagram.com/los_andreou/">@los_andreou (Instagram)</a><br>
 	</p><br>
 {% endblock %}

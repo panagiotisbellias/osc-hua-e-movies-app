@@ -1,7 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -27,6 +26,12 @@
                         </div>
                     <div class="col-6 text-right">
                         <p>The biggest movie library you will ever see!!!</p>
+                    {% if user.is_authenticated %}
+                        <p class="pt-3">Logged in as <strong>{{ user.username }}</strong>. <a href="{% url 'logout' %}">Log out</a>.</p>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-light" role="button">Log in</a>
+                        <a href="{% url 'signup' %}" class="btn btn-primary" role="button">Sign up</a>
+                    {% endif %}
                     </div>
                 </div>
                 <div class="card mb-3">

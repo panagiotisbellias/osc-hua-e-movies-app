@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+    <h1> The Registration Request Is Approved </h1>
+    <p> The new manager will be notified to come back and login. </p>
+    <a href="{% url 'registration_requests' %}" class="btn btn-teacher btn-lg" role="button">Continue reviewing requests</a>
+    <a href="{% url 'index' %}" class="btn btn-teacher btn-lg" role="button">Go to movies list</a>
+{% endblock %}

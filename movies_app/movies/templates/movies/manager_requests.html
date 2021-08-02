@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<h3> Manager Requests </h3>
+<a href="{% url 'index' %}" class="btn btn-teacher btn-lg" role="button">Go to movies list</a>
+
+{% if manager_requests %}
+<table border="3">
+    <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Reason</th>
+        <th>Approve?</th>
+    </tr>
+{% for man in manager_requests %}
+    <tr>
+            <th>{{ man.first_name }}</th>
+            <th>{{ man.last_name }}</th>
+            <th>{{ man.username }}</th>
+            <th>{{ man.email }}</th>
+            <th>{{ man.reason }}</th>
+            <th><a href="{% url 'manager_approved' man.username %}">Approve</a></th>
+    </tr>
+{% endfor %}
+</table>
+{% else %}
+<p>No new manager wants to register</p>
+{% endif %}
+{% endblock %}

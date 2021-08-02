@@ -3,10 +3,15 @@
 {% block body_block %}
 
 <h3>Welcome to our movies app.</h3><br><h4> Panagiotis Bellias 21871 / Pavlos Andreou 218110</h4>
+{% if user.is_manager %}
 <a href="{% url 'create' %}" class="btn btn-student btn-lg" role="button">Add New Movie</a>
 <a href="{% url 'create_from_api' %}" class="btn btn-student btn-lg" role="button">Add New Movie From Suggestions</a>
+{% endif %}
+{% if user.is_superuser %}
+   <a href="{% url 'registration_requests' %}" class="btn btn-teacher btn-lg" role="button">Go to manager registration requests</a>
+{% endif %}
 {% if movies %}
-   <table border="1">
+   <table border="2">
       <tr>
          <th>ID</th>
          <th>Title</th>
@@ -27,7 +32,12 @@
             <th>{{ movie.genre }}</th>
             <th>{{ movie.release_date }}</th>
             <th>{{ movie.rating }}</th>
-            <th><a href = "/movies/{{movie.id}}">View</a></th>
+            {% if user.is_viewer %}
+            <th><a href = "/movies/{{movie.id}}">Rate</a></th>
+            {% endif %}
+            {% if user.is_manager %}
+            <th><a href = "/movies/{{movie.id}}">Delete</a></th>
+            {% endif %}
          </tr>
     {% endfor %}
    </table>
