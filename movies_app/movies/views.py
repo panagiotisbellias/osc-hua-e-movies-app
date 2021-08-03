@@ -168,6 +168,10 @@ def make_request(request):
     email = request.POST.get("email")
     password = request.POST.get("password")
     reason = request.POST.get("reason")
+
+    if ManagerRequest.objects.filter(username=username):
+        return render(request, 'registration/signup_form_manager.html', {'message': 'Request with your username already exists'})
+
     mr = ManagerRequest(first_name=first_name, last_name=last_name, username=username, email=email, password=password, reason=reason)
     mr.save()
 

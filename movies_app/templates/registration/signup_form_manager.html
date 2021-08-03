@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block body_block %}
+	{% if message %}
+		<h2 style="color: red;"><b> {{ message }} </b></h2>
+	{% endif %}
 	<div class="row">
     		<div class="col-md-8 col-sm-10 col-12">
       			<h2>Sign up as a {{ user_type }}</h2>
