@@ -142,10 +142,11 @@ def send_email(data):
     subject = data["subject"]
     msg = data["message"]
     recipient = data["email_address"]
+    print(recipient)
     html_msg = data["html_msg"]
     if subject and msg and recipient:
         try:
-            send_mail(subject, msg, EMAIL_HOST_USER, recipient, fail_silently = False, html_message=html_msg)
+            send_mail(subject, msg, EMAIL_HOST_USER, [recipient], fail_silently = False, html_message=html_msg)
         except message.BadHeaderError:
             response = HttpResponse('Invalid header found.')
         response = "Email sent."

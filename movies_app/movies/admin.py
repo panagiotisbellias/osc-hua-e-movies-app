@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Movies
+from .models import Movies, Emails, User, ManagerRequest
 
 class MovieAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -9,3 +9,6 @@ class MovieAdmin(admin.ModelAdmin):
     ]
 
 admin.site.register(Movies, MovieAdmin)
+admin.site.register(Emails)
+admin.site.register(User)
+admin.site.register(ManagerRequest)
