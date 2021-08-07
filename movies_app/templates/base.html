@@ -5,8 +5,15 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>{% block title %}e-movies app{% endblock %}</title>
+        <link rel="icon" href="https://png.pngtree.com/png-clipart/20190603/original/pngtree-film-png-image_634334.jpg">
         <link href="https://fonts.googleapis.com/css?family=Clicker+Script" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+        {% if user.is_authenticated and user.is_manager %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/managers.css' %}">
+        {% else %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/viewers.css' %}">
+        {% endif %}
     </head>
     <body>
         <a href="https://github.com/panagiotisbellias/e-movies-app">
@@ -18,10 +25,11 @@
                 <div class="col-md-10 col-sm-12">
                     <div class="row">
                         <div class="col-6">
-                            <h1>
+                            <h1 class="logo">
                                 <a href="{% url 'home' %}">
-                                    E-Movies App
+                                    E-Movies App 
                                 </a>
+                                <img src="https://png.pngtree.com/png-clipart/20200813/ourlarge/pngtree-filming-color-props-clapperboard-film-elements-png-image_2325278.jpg" width="100">
                             </h1>
                         </div>
                     <div class="col-6 text-right">
