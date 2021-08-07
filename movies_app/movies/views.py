@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.utils.html import strip_tags
@@ -49,7 +50,7 @@ def rate(request, movie_id):
     try:
         selected_rating = request.POST['rating']
     except MultiValueDictKeyError:
-        raise Http404('')
+        return render(request, '404.html')
     movie.rating = round((float(movie.rating) + float(selected_rating)) / 2, 1)
     movie.save()
     return HttpResponseRedirect(reverse('index'))
@@ -87,7 +88,7 @@ def suggested(request):
 
     # https://api.trakt.tv
     # https://developer.imdb.com/?ref=ft_ds 
-    pass
+    return render(request, '404.html')
 
 @login_required
 @admin_required
