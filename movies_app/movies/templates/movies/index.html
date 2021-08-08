@@ -32,12 +32,15 @@
             <th>{{ movie.genre }}</th>
             <th>{{ movie.release_date }}</th>
             <th>{{ movie.rating }}</th>
+            <th><a href = "/movies/{{movie.id}}">
             {% if user.is_viewer %}
-            <th><a href = "/movies/{{movie.id}}">Rate</a></th>
+            Rate
+            {% elif user.is_manager %}
+            Delete
+            {% elif user.is_superuser %}
+            View
             {% endif %}
-            {% if user.is_manager %}
-            <th><a href = "/movies/{{movie.id}}">Delete</a></th>
-            {% endif %}
+            </a></th>
          </tr>
     {% endfor %}
    </table>
