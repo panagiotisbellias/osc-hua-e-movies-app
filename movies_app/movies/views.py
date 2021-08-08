@@ -172,7 +172,9 @@ def make_request(request):
     reason = request.POST.get("reason")
 
     if ManagerRequest.objects.filter(username=username):
-        return render(request, 'registration/signup_form_manager.html', {'message': 'Request with your username already exists'})
+        return render(request, 'registration/signup_form_manager.html', {
+            'message': 'Request with your username already exists'
+            })
 
     mr = ManagerRequest(first_name=first_name, last_name=last_name, username=username, email=email, password=password, reason=reason)
     mr.save()
@@ -183,13 +185,17 @@ def make_request(request):
     html_content = render_to_string('movies/mail_admins.html')
     text_content = strip_tags(html_content)
 
-    data = {
-        'sub':'New Manager Registration Request',
-        'mes': text_content,
-        'html': html_content,
-        'email': emails
-    }
-    send_email(data)
+    subject = 'New Manager Registration Request'
+    print(emails)
+    try:
+        send_mail(subject, text_content, EMAIL_HOST_USER, emails, fail_silently = False, html_message=html_content)
+    except message.BadHeaderError:
+        return render(request, '404.html')
+
+    tz = pytz.timezone('Europe/Athens')
+
+    email = Emails(sender=EMAIL_HOST_USER, subject=subject, body_message=message, recipient=emails, date_sent=datetime.now(tz=tz))
+    email.save()
 
     return render(request, 'movies/request_made.html')
 
