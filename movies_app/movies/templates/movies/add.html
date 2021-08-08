@@ -4,17 +4,25 @@
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<h1>Create a Movie </h1>
+<div class="box">
+
 <form action="{% url 'new_movie' %}" method="post">
     {% csrf_token %}
-    <table>
-    <tr> <th>Title:</th><th> <input type="text" name="title"/></th> </tr>
-    <tr> <th>Director: </th><th><input type="text" name="director"/></th> </tr>
-    <tr> <th>Actors: </th><th><textarea cols="22" rows="8" name="actors"></textarea></th> </tr>
-    <tr> <th>Genre: </th><th><input type="text" name="genre"/></th> </tr>
-    <tr> <th>Release Date: </th><th><input type="date" name="release_date"/></th> </tr>
-    <tr> <th><input type="submit" value="Add Movie"/> </th></tr> 
-    </table>
+    <h1>Create a Movie </h1>
+    <div class="form-box">
+            <input type="text" placeholder="Title" name="title"/>
+            <input type="text" placeholder="Director" name="director"/>
+            <textarea cols="22" rows="8" placeholder="Actors" name="actors"></textarea>
+            <input type="text" placeholder="Genre" name="genre"/>
+            <input type="date" placeholder="Release Date" name="release_date"/>
+            <div class="sign">
+                <input type="submit" value="Add Movie"/> 
+            </div>
+            
+        </form>
+    </div>
 </form>
+
+</div>
 
 {% endblock %}
