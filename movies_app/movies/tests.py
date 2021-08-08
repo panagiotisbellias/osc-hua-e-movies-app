@@ -1,4 +1,5 @@
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth import authenticate, login
 from django.test import TestCase
 
 from .models import ManagerRequest, User
@@ -6,31 +7,48 @@ from .models import ManagerRequest, User
 # Auth Tests
 class AuthenticationTests(TestCase):
 
-    # Viewer Registration
-    def test_register_viewer(self):
-       User.objects.create(
-           username='viewer_test',
+    def newViewer(self):
+        username='viewer_test'
+        User.objects.create(
+           username=username,
            password=make_password('viewerpasswd'),
            is_viewer=True
-       )
-       self.assertEquals(User.objects.get(is_viewer=True).username, 'viewer_test')
+        )
+        return username
 
-    # Login Testing
-    def test_loginning_in(self):
-        pass
-
-    # Manager Requesting Registration
-    def test_reqister_requesting(self):
+    def newManagerRequest(self):
+        username='manager_test'
         ManagerRequest.objects.create(
             first_name='Manager',
             last_name='Test',
-            username = 'manager_test',
+            username = username,
             email = 'test@mail.com',
             password = 'managerpasswd',
             reason = 'test_reason',
             is_manager = True
         )
+        return username
+
+    # Viewer Registration
+    def test_register_viewer(self):
+        username = self.newViewer()
+        print(f"Test 1.1.1: New Viewer with username '{username}' created")
+        self.assertEquals(User.objects.get(is_viewer=True).username, 'viewer_test')
+        print(f"Test 1.1.2: Viewer with username '{username}' is registered successfully")
+
+    # Login Testing
+    def test_loginning_in(self):
+        self.newViewer()
+        user = authenticate(username='viewer_test', password='viewerpasswd')
+        print(f"Login Test: Check")
+        self.assertIsNotNone(user)
+        
+    # Manager Requesting Registration
+    def test_reqister_requesting(self):
+        username = self.newManagerRequest()
+        print(f"Test 1.2.1: New Manager Request for user with username '{username}' created")
         self.assertEquals(ManagerRequest.objects.get(is_manager=True).username, 'manager_test')
+        print(f"Test 1.2.2: New Manager Request for user with username '{username}' has been delivered")
 
     # Approve Request
     def test_request_approving(self):
