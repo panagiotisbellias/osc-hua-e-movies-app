@@ -95,7 +95,7 @@ WSGI_APPLICATION = 'movies_app.wsgi.application'
 DATABASES = {
     # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'DATABASE_URL': env.db(),
     },
     # read os.environ['SQLITE_URL']
