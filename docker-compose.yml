@@ -1,0 +1,36 @@
+version: "2"
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=demouser
+      - POSTGRES_PASSWORD=pass123
+      - POSTGRES_DB=demodb
+    volumes:
+      - dj_postgres_data:/var/lib/postgresql/data/
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+     - ./movies_app/movies_app/.env
+    volumes:
+      - static_volume:/app/static
+    depends_on:
+      - db
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./assets/nginx/nginx.http.config:/etc/nginx/nginx.conf
+      #- ./assets/nginx/certs:/etc/nginx/certs
+      - static_volume:/app/static
+    ports:
+      # - "443:443"
+      - "80:80"
+    depends_on:
+      - django
+
+volumes:
+  dj_postgres_data:
+  static_volume:
