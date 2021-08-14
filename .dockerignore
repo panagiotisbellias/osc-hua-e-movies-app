@@ -1,0 +1,9 @@
+*.pyc
+*.pyo
+*.mo
+*.db
+myvenv
+Dockerfile
+Jenkinsfile
+README.md
+*.sqlite3
