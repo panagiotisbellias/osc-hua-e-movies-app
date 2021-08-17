@@ -12,7 +12,7 @@ services:
   django:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: nonroot.Dockerfile
     env_file:
      - ./movies_app/movies_app/.env
     volumes:
