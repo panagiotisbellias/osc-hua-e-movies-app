@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: django
+  template:
+    metadata:
+      labels:
+        component: django
+    spec:
+      #initContainers:
+      #  - name: django-init
+      #    image: belpanos/django-movies
+      #    command: ["/bin/bash"]
+      #    args: ["-c", "python manage.py makemigrations && python manage.py migrate"]
+      containers:
+        - name: django
+          image: belpanos/django-movies
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: django-config
+          imagePullPolicy: Always
