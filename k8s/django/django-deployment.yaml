@@ -12,11 +12,11 @@ spec:
       labels:
         component: django
     spec:
-      #initContainers:
-      #  - name: django-init
-      #    image: belpanos/django-movies
-      #    command: ["/bin/bash"]
-      #    args: ["-c", "python manage.py makemigrations && python manage.py migrate"]
+      initContainers:
+        - name: django-init
+          image: belpanos/django-movies
+          command: ["/bin/bash"]
+          args: ["-c", "python manage.py makemigrations && python manage.py migrate"]
       containers:
         - name: django
           image: belpanos/django-movies
