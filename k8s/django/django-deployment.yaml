@@ -16,7 +16,7 @@ spec:
         - name: django-init
           image: belpanos/django-movies
           command: ["/bin/bash"]
-          args: ["-c", "python manage.py makemigrations && python manage.py migrate && echo "from django.contrib.auth.models import User; User.objects.create_superuser('belpanos', 'belliaspanagiotis@gmail.com', 'pass123')" | python manage.py shell"]
+          args: ["-c", "python manage.py makemigrations && python manage.py migrate"]
       containers:
         - name: django
           image: belpanos/django-movies
