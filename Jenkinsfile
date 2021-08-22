@@ -26,9 +26,8 @@ pipeline {
                 sshagent (credentials: ['ssh-azure']) {
 
                 sh '''
-                    pwd
-                    echo $WORKSPACE
-                    ansible-playbook -i ~/workspace/ansible-movie-code/hosts.yml -l test ~/workspace/ansible-movie-code/playbooks/postgres-install.yml
+                    cd ~/workspace/ansible-movie-code
+                    ansible-playbook -l test playbooks/postgres-install.yml
                     '''
                 }
             }
