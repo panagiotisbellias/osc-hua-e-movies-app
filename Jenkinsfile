@@ -21,5 +21,18 @@ pipeline {
             }
         }
 
+        stage('Deploy') {
+            steps {
+                sshagent (credentials: ['ssh-azure']) {
+
+                sh '''
+                    pwd
+                    echo $WORKSPACE
+                    ansible-playbook -i ~/workspace/ansible-movie-code/hosts.yml -l test ~/workspace/ansible-movie-code/playbooks/postgres-install.yml
+                    '''
+                }
+            }
+        }
+
     }
 }
