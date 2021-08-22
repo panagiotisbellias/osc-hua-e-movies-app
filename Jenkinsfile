@@ -21,13 +21,12 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy to Docker') {
             steps {
                 sshagent (credentials: ['ssh-azure']) {
-
-                sh '''
-                    cd ~/workspace/ansible-movie-code
-                    ansible-playbook -l test playbooks/postgres-install.yml
+                    sh '''
+                        cd ~/workspace/ansible-movie-code
+                        ansible-playbook -l test playbooks/django-docker.yml
                     '''
                 }
             }
