@@ -22,7 +22,15 @@ pipeline {
             }
         }
 
-        stage('Deploy to k8s') {
+        stage('Docker Image Getting Ready') {
+            steps {
+                sh '''
+                    docker build -t belpanos/django-movies -f nonroot.Dockerfile .
+                '''
+            }
+        }
+
+        stage('Kubernetes Deployment') {
             steps {
                 sh '''
                     kubectl get pods
