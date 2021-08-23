@@ -21,6 +21,29 @@ pipeline {
                 '''
             }
         }
+        stage('Ansible Deployment') {
+            steps {
+                sshagent (credentials: ['ssh-azure']) {
+
+                sh '''
+                    cd ~/workspace/ansible-movie-code
+                    ansible-playbook -l test playbooks/postgres-install.yml
+                    ansible-playbook -l test playbooks/django-install.yml
+                    '''
+                }
+            }
+        }
+
+        stage('Docker Deployment') {
+            steps {
+                sshagent (credentials: ['ssh-azure']) {
+                    sh '''
+                        cd ~/workspace/ansible-movie-code
+                        ansible-playbook -l test playbooks/django-docker.yml
+                    '''
+                }
+            }
+        }
 
         stage('Preparing k8s Deployment') {
             environment {
