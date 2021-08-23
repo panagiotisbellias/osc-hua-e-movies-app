@@ -23,9 +23,20 @@ pipeline {
         }
 
         stage('Docker Image Getting Ready') {
+            environment {
+                IMAGE='belpanos/django-movies'
+                DOCKER_USERNAME='belpanos'
+                DOCKER_PASSWORD=credentials('docker-passwd')
+            }
             steps {
                 sh '''
-                    docker build -t belpanos/django-movies -f nonroot.Dockerfile .
+                    echo $BUILD_ID
+                    COMMIT_ID=$(git rev-parse --short HEAD)
+                    echo $COMMIT_ID
+                    TAG=$COMMIT_ID-$BUILD_ID
+                    docker build -t $IMAGE -t $IMAGE:$TAG -f nonroot.Dockerfile .
+                    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+                    docker push $IMAGE --all-tags
                 '''
             }
         }
