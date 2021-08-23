@@ -22,7 +22,7 @@ pipeline {
             }
         }
 
-        stage('Docker Image Getting Ready') {
+        stage('Preparing k8s Deployment') {
             environment {
                 IMAGE='belpanos/django-movies'
                 DOCKER_USERNAME='belpanos'
@@ -44,7 +44,14 @@ pipeline {
         stage('Kubernetes Deployment') {
             steps {
                 sh '''
-                    kubectl get pods
+                    kubectl config use-context microk8s
+                    cd k8s
+                    kubectl apply -f db/postgres-pvc.yaml
+                    kubectl apply -f db/postgres-deployment.yaml
+                    kubectl apply -f db/postgres-clip.yaml
+                    kubectl apply -f django/django-deployment.yaml
+                    kubectl apply -f django/django-clip.yaml
+                    kubectl apply -f django/django-ingress.yaml
                 '''
             }
         }
