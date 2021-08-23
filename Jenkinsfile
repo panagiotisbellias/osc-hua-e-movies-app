@@ -17,18 +17,16 @@ pipeline {
                     pip install -r requirements.txt
                     cd movies_app
                     cp movies_app/.env.example movies_app/.env
-                    ./manage.py test'''
+                    ./manage.py test
+                '''
             }
         }
 
-        stage('Deploy to Docker') {
+        stage('Deploy to k8s') {
             steps {
-                sshagent (credentials: ['ssh-azure']) {
-                    sh '''
-                        cd ~/workspace/ansible-movie-code
-                        ansible-playbook -l test playbooks/django-docker.yml
-                    '''
-                }
+                sh '''
+                    kubectl get pods
+                '''
             }
         }
 
