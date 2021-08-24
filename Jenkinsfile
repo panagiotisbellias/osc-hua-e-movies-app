@@ -1,8 +1,7 @@
 pipeline {
     agent any
-
+    withCredentials([file(credentialsId: 'deployment-secrets')])
     environment { 
-        SECRET_FILE_ID = credentials('deployment-secrets')
         PSQL_USER = credentials('PSQL_USER')
         PSQL_PASSWD = credentials('PSQL_PASSWD')
         PSQL_DATABASE = credentials('PSQL_DATABASE')
