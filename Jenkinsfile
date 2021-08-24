@@ -1,7 +1,6 @@
 pipeline {
     agent any
-    withCredentials([file(credentialsId: 'deployment-secrets')])
-    environment { 
+    /*environment { 
         PSQL_USER = credentials('PSQL_USER')
         PSQL_PASSWD = credentials('PSQL_PASSWD')
         PSQL_DATABASE = credentials('PSQL_DATABASE')
@@ -14,6 +13,9 @@ pipeline {
         K8S_HOSTS = credentials('K8S_ALLOWED_HOSTS')
         EMAIL_USER = credentials('EMAIL_USER')
         EMAIL_PASSWD = credentials('EMAIL_PASSWD')
+    }*/
+    environment {
+        CREDS = credentials('deployment-secrets')
     }
 
     stages {
@@ -51,8 +53,8 @@ pipeline {
 
                     ansible-playbook -l gcloud_ansible playbooks/django-install.yml\
                     -e SECRET_KEY=$SECRET_KEY \
-                    -e DATABASE_URL=$ANS_DB_URL \
-                    -e ALLOWED_HOSTS=$ANS_HOSTS \
+                    -e DATABASE_URL=$ANS_DATABASE_URL \
+                    -e ALLOWED_HOSTS=$ANS_ALLOWED_HOSTS \
                     -e EMAIL_USER=$EMAIL_USER \
                     -e EMAIL_PASSWD=$EMAIL_PASSWD \
                     -e DEBUG=$DEBUG
@@ -68,8 +70,8 @@ pipeline {
                         cd ~/workspace/ansible-movie-code
                         ansible-playbook -l azure_docker playbooks/django-docker.yml \
                         -e SECRET_KEY=$SECRET_KEY \
-                        -e DATABASE_URL=$DOCK_DB_URL \
-                        -e ALLOWED_HOSTS=$DOCK_HOSTS \
+                        -e DATABASE_URL=$DOCK_DATABASE_URL \
+                        -e ALLOWED_HOSTS=$DOCK_ALLOWED_HOSTS \
                         -e EMAIL_USER=$EMAIL_USER \
                         -e EMAIL_PASSWD=$EMAIL_PASSWD \
                         -e DEBUG=$DEBUG
@@ -113,7 +115,7 @@ pipeline {
                     ansible-playbook playbooks/django-populate-env.yml \
                     -e SECRET_KEY=$SECRET_KEY \
                     -e DATABASE_URL=$K8S_DATABASE_URL \
-                    -e ALLOWED_HOSTS=$K8S_HOSTS \
+                    -e ALLOWED_HOSTS=$K8S_ALLOWED_HOSTS \
                     -e EMAIL_USER=$EMAIL_USER \
                     -e EMAIL_PASSWD=$EMAIL_PASSWD \
                     -e DEBUG=$DEBUG
