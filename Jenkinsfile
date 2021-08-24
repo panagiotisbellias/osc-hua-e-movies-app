@@ -10,7 +10,7 @@ pipeline {
         ANS_HOSTS = credentials('ANS_ALLOWED_HOSTS')
         DOCK_DB_URL = credentials('DOCK_DATABASE_URL')
         DOCK_HOSTS = credentials('DOCK_ALLOWED_HOSTS')
-        K8S_DB_URL = credentials('K8S_DATABASE_URL')
+        K8S_DATABASE_URL = credentials('K8S_DATABASE_URL')
         K8S_HOSTS = credentials('K8S_ALLOWED_HOSTS')
         EMAIL_USER = credentials('EMAIL_USER')
         EMAIL_PASSWD = credentials('EMAIL_PASSWD')
@@ -112,7 +112,7 @@ pipeline {
                     cd ~/workspace/ansible-movie-code
                     ansible-playbook playbooks/django-populate-env.yml \
                     -e SECRET_KEY=$SECRET_KEY \
-                    -e DATABASE_URL=$K8S_DB_URL \
+                    -e DATABASE_URL=$K8S_DATABASE_URL \
                     -e ALLOWED_HOSTS=$K8S_HOSTS \
                     -e EMAIL_USER=$EMAIL_USER \
                     -e EMAIL_PASSWD=$EMAIL_PASSWD \
