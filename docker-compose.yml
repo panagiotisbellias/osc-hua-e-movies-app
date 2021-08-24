@@ -6,7 +6,7 @@ services:
     environment:
       - POSTGRES_USER=demouser
       - POSTGRES_PASSWORD=pass123
-      - POSTGRES_DB=demodb
+      - POSTGRES_DB=deploy_db
     volumes:
       - dj_postgres_data:/var/lib/postgresql/data/
   django:

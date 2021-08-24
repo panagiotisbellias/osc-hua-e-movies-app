@@ -33,7 +33,10 @@ spec:
                   name: pg-user
                   key: PGPASSWORD
             - name: POSTGRES_DB
-              value: test_db
+              valueFrom:
+                secretKeyRef:
+                  name: pg-user
+                  key: PGDATABASE
           volumeMounts:
             - name: pg-database-persistent-volume-storage
               mountPath: /var/lib/postgresql/data
