@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment { 
-        //PSQL_USER = credentials('PSQL_USER')
+        SECRET_FILE_ID = credentials('deployment-secrets')
+        PSQL_USER = credentials('PSQL_USER')
         PSQL_PASSWD = credentials('PSQL_PASSWD')
         PSQL_DATABASE = credentials('PSQL_DATABASE')
         SECRET_KEY = credentials('SECRET_KEY')
