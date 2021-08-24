@@ -13,7 +13,7 @@ pipeline {
         K8S_DB_URL = credentials('K8S_DATABASE_URL')
         K8S_HOSTS = credentials('K8S_ALLOWED_HOSTS')
         EMAIL_USER = credentials('EMAIL_USER')
-        EMAIL_PASS = credentials('EMAIL_PASSWD')
+        EMAIL_PASSWD = credentials('EMAIL_PASSWD')
     }
 
     stages {
@@ -54,7 +54,7 @@ pipeline {
                     -e DATABASE_URL=$ANS_DB_URL \
                     -e ALLOWED_HOSTS=$ANS_HOSTS \
                     -e EMAIL_USER=$EMAIL_USER \
-                    -e EMAIL_PASSWD=$EMAIL_PASS \
+                    -e EMAIL_PASSWD=$EMAIL_PASSWD \
                     -e DEBUG=$DEBUG
                     '''
                 }
@@ -71,7 +71,7 @@ pipeline {
                         -e DATABASE_URL=$DOCK_DB_URL \
                         -e ALLOWED_HOSTS=$DOCK_HOSTS \
                         -e EMAIL_USER=$EMAIL_USER \
-                        -e EMAIL_PASSWD=$EMAIL_PASS \
+                        -e EMAIL_PASSWD=$EMAIL_PASSWD \
                         -e DEBUG=$DEBUG
                     '''
                 }
@@ -115,7 +115,7 @@ pipeline {
                     -e DATABASE_URL=$K8S_DB_URL \
                     -e ALLOWED_HOSTS=$K8S_HOSTS \
                     -e EMAIL_USER=$EMAIL_USER \
-                    -e EMAIL_PASSWD=$EMAIL_PASS \
+                    -e EMAIL_PASSWD=$EMAIL_PASSWD \
                     -e DEBUG=$DEBUG
                     kubectl delete configMaps/django-config
                     kubectl create configmap django-config --from-env-file=movies_app/movies_app/.env
