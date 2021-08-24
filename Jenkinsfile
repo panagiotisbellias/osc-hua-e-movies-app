@@ -4,7 +4,7 @@ pipeline {
     environment { 
         PSQL_USER = credentials('PSQL_USER')
         PSQL_PASSWD = credentials('PSQL_PASSWD')
-        PSQL_DB = credentials('PSQL_DATABASE')
+        PSQL_DATABASE = credentials('PSQL_DATABASE')
         SECRET_KEY = credentials('SECRET_KEY')
         ANS_DB_URL = credentials('ANS_DATABASE_URL')
         ANS_HOSTS = credentials('ANS_ALLOWED_HOSTS')
@@ -47,7 +47,7 @@ pipeline {
                     ansible-playbook -l gcloud_ansible playbooks/postgres-install.yml \
                     -e PSQL_USER=$PSQL_USER \
                     -e PSQL_PASSWD=$PSQL_PASSWD \
-                    -e PSQL_DB=$PSQL_DB
+                    -e PSQL_DB=$PSQL_DATABASE
 
                     ansible-playbook -l gcloud_ansible playbooks/django-install.yml\
                     -e SECRET_KEY=$SECRET_KEY \
@@ -107,7 +107,7 @@ pipeline {
                     kubectl create secret generic pg-user \
                     --from-literal=PGUSERNAME=$PSQL_USER
                     --from-literal=PGPASSWORD=$PSQL_PASSWD
-                    --from-literal=PGDATABASE=$PSQL_DB
+                    --from-literal=PGDATABASE=$PSQL_DATABASE
                     
                     cd ~/workspace/ansible-movie-code
                     ansible-playbook playbooks/django-populate-env.yml \
