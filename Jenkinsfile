@@ -47,12 +47,12 @@ pipeline {
                 sh '''
                     cd ~/workspace/ansible-movie-code
                     ansible-playbook -l gcloud_ansible playbooks/postgres-install.yml \
-                    -e PSQL_USER=$CREDS.PSQL_USER \
-                    -e PSQL_PASSWD=$CREDS.PSQL_PASSWD \
-                    -e PSQL_DB=$CREDS.PSQL_DATABASE
+                    -e PSQL_USER=$PSQL_USER \
+                    -e PSQL_PASSWD=$PSQL_PASSWD \
+                    -e PSQL_DB=$PSQL_DATABASE
 
                     ansible-playbook -l gcloud_ansible playbooks/django-install.yml\
-                    -e SECRET_KEY=$CREDS.SECRET_KEY \
+                    -e SECRET_KEY=$SECRET_KEY \
                     -e DATABASE_URL=$ANS_DATABASE_URL \
                     -e ALLOWED_HOSTS=$ANS_ALLOWED_HOSTS \
                     -e EMAIL_USER=$EMAIL_USER \
