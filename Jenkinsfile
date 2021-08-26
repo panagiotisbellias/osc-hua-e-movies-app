@@ -124,8 +124,9 @@ pipeline {
                     -e ALLOWED_HOSTS=$HOSTS \
                     -e EMAIL_USER=$MAIL_USER \
                     -e EMAIL_PASSWD=$MAIL_PASS
-                    kubectl delete configMaps/django-config
-                    kubectl create configmap django-config --from-env-file=movies_app/movies_app/.env
+                    kubectl create configmap django-config --from-env-file=movies_app/movies_app/.env \
+                    --dry-run -o yaml \
+                    | kubectl apply -f -
                     
                     cd k8s
                     kubectl apply -f db/postgres-pvc.yaml
