@@ -106,16 +106,16 @@ pipeline {
                 DB_URL=credentials('k8s-db-url')
                 HOSTS=credentials('k8s-hosts')
             }
-//                    kubectl delete secret/pg-user
 
             steps {
                 sh '''
                     kubectl config use-context microk8s
 
-                    kubectl rolling-update secret generic pg-user \
+                    kubectl create secret generic pg-user \
                     --from-literal=PGUSERNAME=$DB_USER
                     --from-literal=PGPASSWORD=$DB_PASS
-                    --from-literal=PGDATABASE=$DB_NAME
+                    --from-literal=PGDATABASE=$DB_NAME --dry-run -o yaml \
+                    | kubectl apply -f -
                     
                     cd ~/workspace/ansible-movie-code
                     ansible-playbook playbooks/django-populate-env.yml \
