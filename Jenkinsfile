@@ -124,7 +124,8 @@ pipeline {
                     -e ALLOWED_HOSTS=$HOSTS \
                     -e EMAIL_USER=$MAIL_USER \
                     -e EMAIL_PASSWD=$MAIL_PASS
-                    kubectl create configmap django-config --from-env-file=movies_app/movies_app/.env \
+                    kubectl create configmap django-config --from-env-file=\
+                    /var/lib/jenkins/workspace/e-movies_app/movies_app/movies_app/.env \
                     --dry-run -o yaml \
                     | kubectl apply -f -
                     
