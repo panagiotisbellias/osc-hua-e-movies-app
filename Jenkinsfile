@@ -112,8 +112,8 @@ pipeline {
                     kubectl config use-context microk8s
 
                     kubectl create secret generic pg-user \
-                    --from-literal=PGUSERNAME=$DB_USER
-                    --from-literal=PGPASSWORD=$DB_PASS
+                    --from-literal=PGUSERNAME=$DB_USER \
+                    --from-literal=PGPASSWORD=$DB_PASS \
                     --from-literal=PGDATABASE=$DB_NAME --dry-run -o yaml \
                     | kubectl apply -f -
                     
