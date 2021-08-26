@@ -1,21 +1,13 @@
 pipeline {
     agent any
-    /*environment { 
-        PSQL_USER = credentials('PSQL_USER')
-        PSQL_PASSWD = credentials('PSQL_PASSWD')
-        PSQL_DATABASE = credentials('PSQL_DATABASE')
-        SECRET_KEY = credentials('SECRET_KEY')
-        ANS_DB_URL = credentials('ANS_DATABASE_URL')
-        ANS_HOSTS = credentials('ANS_ALLOWED_HOSTS')
-        DOCK_DB_URL = credentials('DOCK_DATABASE_URL')
-        DOCK_HOSTS = credentials('DOCK_ALLOWED_HOSTS')
-        K8S_DATABASE_URL = credentials('K8S_DATABASE_URL')
-        K8S_HOSTS = credentials('K8S_ALLOWED_HOSTS')
-        EMAIL_USER = credentials('EMAIL_USER')
-        EMAIL_PASSWD = credentials('EMAIL_PASSWD')
-    }*/
+
     environment {
-        CREDS = credentials('deployment-secrets')
+        DB_USER=credentials('psql-user')
+        DB_PASS=credentials('psql-pass')
+        DB_NAME=credentials('psql-db')
+        SECRET_KEY=credentials('django-key')
+        MAIL_USER=credentials('mail-user')
+        MAIL_PASS=credentials('mail-pass')
     }
 
     stages {
@@ -41,40 +33,48 @@ pipeline {
         }
 
         stage('Ansible Deployment') {
+            environment {
+                DB_URL=credentials('ansible-db-url')
+                HOSTS=credentials('ansible-hosts')
+            }
+
             steps {
                 sshagent (credentials: ['ssh-azure']) {
 
                 sh '''
                     cd ~/workspace/ansible-movie-code
                     ansible-playbook -l gcloud_ansible playbooks/postgres-install.yml \
-                    -e PSQL_USER=$PSQL_USER \
-                    -e PSQL_PASSWD=$PSQL_PASSWD \
-                    -e PSQL_DB=$PSQL_DATABASE
+                    -e PSQL_USER=$DB_USER \
+                    -e PSQL_PASSWD=$DB_PASS \
+                    -e PSQL_DB=$DB_NAME
 
-                    ansible-playbook -l gcloud_ansible playbooks/django-install.yml\
+                    ansible-playbook -l gcloud_ansible playbooks/django-install.yml \
                     -e SECRET_KEY=$SECRET_KEY \
-                    -e DATABASE_URL=$ANS_DATABASE_URL \
-                    -e ALLOWED_HOSTS=$ANS_ALLOWED_HOSTS \
-                    -e EMAIL_USER=$EMAIL_USER \
-                    -e EMAIL_PASSWD=$EMAIL_PASSWD \
-                    -e DEBUG=$DEBUG
+                    -e DATABASE_URL=$DB_URL \
+                    -e ALLOWED_HOSTS=$HOSTS \
+                    -e EMAIL_USER=$MAIL_USER \
+                    -e EMAIL_PASSWD=$MAIL_PASS
                     '''
                 }
             }
         }
 
         stage('Docker Deployment') {
+            environment {
+                DB_URL=credentials('docker-db-url')
+                HOSTS=credentials('docker-hosts')
+            }
+
             steps {
                 sshagent (credentials: ['ssh-azure']) {
                     sh '''
                         cd ~/workspace/ansible-movie-code
                         ansible-playbook -l azure_docker playbooks/django-docker.yml \
                         -e SECRET_KEY=$SECRET_KEY \
-                        -e DATABASE_URL=$DOCK_DATABASE_URL \
-                        -e ALLOWED_HOSTS=$DOCK_ALLOWED_HOSTS \
-                        -e EMAIL_USER=$EMAIL_USER \
-                        -e EMAIL_PASSWD=$EMAIL_PASSWD \
-                        -e DEBUG=$DEBUG
+                        -e DATABASE_URL=$DB_URL \
+                        -e ALLOWED_HOSTS=$HOSTS \
+                        -e EMAIL_USER=$MAIL_USER \
+                        -e EMAIL_PASSWD=$MAIL_PASS
                     '''
                 }
             }
@@ -82,9 +82,9 @@ pipeline {
 
         stage('Preparing k8s Deployment') {
             environment {
-                IMAGE='belpanos/django-movies'
-                DOCKER_USERNAME='belpanos'
-                DOCKER_PASSWORD=credentials('docker-passwd')
+                IMAGE=credentials('docker-image')
+                DOCKER_USERNAME=credentials('docker-user')
+                DOCKER_PASSWORD=credentials('docker-pass')
             }
             
             steps {
@@ -101,24 +101,28 @@ pipeline {
         }
 
         stage('Kubernetes Deployment') {
+            environment {
+                DB_URL=credentials('k8s-db-url')
+                HOSTS=credentials('k8s-hosts')
+            }
+
             steps {
                 sh '''
                     kubectl config use-context microk8s
 
                     kubectl delete secret/pg-user
                     kubectl create secret generic pg-user \
-                    --from-literal=PGUSERNAME=$PSQL_USER
-                    --from-literal=PGPASSWORD=$PSQL_PASSWD
-                    --from-literal=PGDATABASE=$PSQL_DATABASE
+                    --from-literal=PGUSERNAME=$DB_USER
+                    --from-literal=PGPASSWORD=$DB_PASS
+                    --from-literal=PGDATABASE=$DB_NAME
                     
                     cd ~/workspace/ansible-movie-code
                     ansible-playbook playbooks/django-populate-env.yml \
                     -e SECRET_KEY=$SECRET_KEY \
-                    -e DATABASE_URL=$K8S_DATABASE_URL \
-                    -e ALLOWED_HOSTS=$K8S_ALLOWED_HOSTS \
-                    -e EMAIL_USER=$EMAIL_USER \
-                    -e EMAIL_PASSWD=$EMAIL_PASSWD \
-                    -e DEBUG=$DEBUG
+                    -e DATABASE_URL=$DB_URL \
+                    -e ALLOWED_HOSTS=$HOSTS \
+                    -e EMAIL_USER=$MAIL_USER \
+                    -e EMAIL_PASSWD=$MAIL_PASS
                     kubectl delete configMaps/django-config
                     kubectl create configmap django-config --from-env-file=movies_app/movies_app/.env
                     
