@@ -39,7 +39,7 @@ pipeline {
             }
 
             steps {
-                sshagent (credentials: ['ssh-azure']) {
+                sshagent (credentials: ['ssh-ansible-vm']) {
 
                 sh '''
                     cd ~/workspace/ansible-movie-code
