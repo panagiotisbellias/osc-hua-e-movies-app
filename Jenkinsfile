@@ -43,10 +43,10 @@ pipeline {
 
                 sh '''
                     cd ~/workspace/ansible-movie-code
-                    ansible-playbook -l gcloud_ansible playbooks/postgres-install.yml \
-                    -e PSQL_USER=$DB_USER \
-                    -e PSQL_PASSWD=$DB_PASS \
-                    -e PSQL_DB=$DB_NAME
+                //    ansible-playbook -l gcloud_ansible playbooks/postgres-install.yml \
+                //    -e PSQL_USER=$DB_USER \
+                //    -e PSQL_PASSWD=$DB_PASS \
+                //    -e PSQL_DB=$DB_NAME
 
                     ansible-playbook -l gcloud_ansible playbooks/django-install.yml \
                     -e SECRET_KEY=$SECRET_KEY \
