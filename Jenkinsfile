@@ -59,7 +59,7 @@ pipeline {
                 }
             }
         }
-*/
+
         stage('Docker Deployment') {
             environment {
                 DB_URL=credentials('docker-db-url')
@@ -80,7 +80,7 @@ pipeline {
                 }
             }
         }
-
+*/
         stage('Preparing k8s Deployment') {
             environment {
                 IMAGE=credentials('docker-image')
