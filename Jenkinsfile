@@ -106,13 +106,13 @@ pipeline {
                 DB_URL=credentials('k8s-db-url')
                 HOSTS=credentials('k8s-hosts')
             }
+//                    kubectl delete secret/pg-user
 
             steps {
                 sh '''
                     kubectl config use-context microk8s
 
-                    kubectl delete secret/pg-user
-                    kubectl create secret generic pg-user \
+                    kubectl rolling-update secret generic pg-user \
                     --from-literal=PGUSERNAME=$DB_USER
                     --from-literal=PGPASSWORD=$DB_PASS
                     --from-literal=PGDATABASE=$DB_NAME
