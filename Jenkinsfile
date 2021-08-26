@@ -124,10 +124,9 @@ pipeline {
                     -e ALLOWED_HOSTS=$HOSTS \
                     -e EMAIL_USER=$MAIL_USER \
                     -e EMAIL_PASSWD=$MAIL_PASS
-                    kubectl create configmap django-config --from-env-file=\
+                    kubectl create configmap django-config --from-env-file= \
                     /var/lib/jenkins/workspace/e-movies_app/movies_app/movies_app/.env \
-                    --dry-run -o yaml \
-                    | kubectl apply -f -
+                    --dry-run -o yaml | kubectl apply -f -
                     
                     cd k8s
                     kubectl apply -f db/postgres-pvc.yaml
