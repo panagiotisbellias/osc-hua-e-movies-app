@@ -32,7 +32,6 @@ pipeline {
             }
         }
 
-/*
         stage('Ansible Deployment') {
             environment {
                 DB_URL=credentials('ansible-db-url')
@@ -80,7 +79,7 @@ pipeline {
                 }
             }
         }
-*/
+
         stage('Preparing k8s Deployment') {
             environment {
                 IMAGE=credentials('docker-image')
