@@ -132,3 +132,6 @@ dmypy.json
 
 # Useless Shell Scripts
 fix_git.sh
+
+# Docker certificates
+assets/nginx/certs
