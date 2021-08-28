@@ -134,7 +134,7 @@ pipeline {
                     kubectl create configmap django-config \
                     --from-env-file=movies_app/movies_app/.env \
                     --dry-run -o yaml | kubectl apply -f -
-                    
+
                     cd k8s
                     kubectl apply -f db/postgres-pvc.yaml
                     kubectl apply -f db/postgres-deployment.yaml
@@ -142,6 +142,7 @@ pipeline {
                     kubectl apply -f django/django-deployment.yaml
                     kubectl apply -f django/django-clip.yaml
                     kubectl apply -f django/django-ingress.yaml
+                    kubectl apply -f django/django-https-ingress.yaml
                 '''
             }
         }
