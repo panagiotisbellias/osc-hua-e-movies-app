@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: django-ingress-ssl
+spec:
+  rules:
+  - host: "movies.k8s.bellias.cloudns.cl"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service: 
+            name: django-clip 
+            port:
+              number: 8000
+  tls:
+    - hosts: 
+      - movies.k8s.bellias.cloudns.cl
+      secretName: tls-secret
