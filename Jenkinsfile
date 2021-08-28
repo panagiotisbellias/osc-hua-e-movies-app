@@ -1,4 +1,5 @@
 pipeline {
+
     agent any
 
     environment {
@@ -11,6 +12,7 @@ pipeline {
     }
 
     stages {
+
         stage('Build') {
             steps {
                 // Get some code from a GitHub repository
@@ -33,6 +35,7 @@ pipeline {
         }
 
         stage('Ansible Deployment') {
+
             environment {
                 DB_URL=credentials('ansible-db-url')
                 HOSTS=credentials('ansible-hosts')
@@ -60,6 +63,7 @@ pipeline {
         }
 
         stage('Docker Deployment') {
+
             environment {
                 DB_URL=credentials('docker-db-url')
                 HOSTS=credentials('docker-hosts')
@@ -81,6 +85,7 @@ pipeline {
         }
 
         stage('Preparing k8s Deployment') {
+
             environment {
                 IMAGE=credentials('docker-image')
                 DOCKER_USERNAME=credentials('docker-user')
@@ -101,6 +106,7 @@ pipeline {
         }
 
         stage('Kubernetes Deployment') {
+            
             environment {
                 DB_URL=credentials('k8s-db-url')
                 HOSTS=credentials('k8s-hosts')
