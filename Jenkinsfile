@@ -144,7 +144,8 @@ pipeline {
                     kubectl apply -f django/django-deployment.yaml
                     kubectl apply -f django/django-clip.yaml
                     kubectl apply -f django/django-ingress.yaml
-                    kubectl apply -f django/django-https-ingress.yaml
+                    kubectl apply -f django/django-https-ingress.yaml \
+                    -e HOST=$HOSTS \
                 '''
             }
         }

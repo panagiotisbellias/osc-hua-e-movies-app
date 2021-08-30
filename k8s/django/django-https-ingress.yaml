@@ -4,7 +4,7 @@ metadata:
   name: django-ingress-ssl
 spec:
   rules:
-  - host: "movies.k8s.bellias.cloudns.cl"
+  - host: "{ HOST }"
     http:
       paths:
       - path: /
@@ -16,5 +16,5 @@ spec:
               number: 8000
   tls:
     - hosts: 
-      - movies.k8s.bellias.cloudns.cl
+      - { HOST }
       secretName: tls-secret
