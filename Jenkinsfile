@@ -124,10 +124,6 @@ pipeline {
                     --from-literal=PGDATABASE=$DB_NAME --dry-run -o yaml \
                     | kubectl apply -f -
                     
-                    kubectl create secret generic k8s-host \
-                    --from-literal=HOST=$HOSTS --dry-run -o yaml \
-                    | kubectl apply -f -
-                    
                     cd ~/workspace/ansible-movie-code
                     ansible-playbook playbooks/django-populate-env.yml \
                     -e SECRET_KEY=$SECRET_KEY \
