@@ -33,7 +33,7 @@ pipeline {
                 '''
             }
         }
-
+        /*
         stage('Ansible Deployment') {
 
             environment {
@@ -61,7 +61,7 @@ pipeline {
                 }
             }
         }
-
+        */
         stage('Docker Deployment') {
 
             environment {
@@ -73,6 +73,7 @@ pipeline {
                 sshagent (credentials: ['ssh-azure']) {
                     sh '''
                         cd ~/workspace/ansible-movie-code
+                        ansible-playbook -l azure_docker playbooks/install-docker-compose.yml
                         ansible-playbook -l azure_docker playbooks/django-docker.yml \
                         -e SECRET_KEY=$SECRET_KEY \
                         -e DATABASE_URL=$DB_URL \
