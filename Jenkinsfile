@@ -61,7 +61,7 @@ pipeline {
                 }
             }
         }
-        */
+        
         stage('Docker Deployment') {
 
             environment {
@@ -84,6 +84,7 @@ pipeline {
                 }
             }
         }
+        */
 
         stage('Preparing k8s Deployment') {
 
