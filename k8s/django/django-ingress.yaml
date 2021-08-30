@@ -4,7 +4,11 @@ metadata:
   name: django-ingress
 spec:
   rules:
-  - host: "movies.k8s.bellias.cloudns.cl"
+  - host:
+    valueFrom:
+      secretKeyRef:
+        name: k8s-host
+        key: HOST
     http:
       paths:
       - path: /
