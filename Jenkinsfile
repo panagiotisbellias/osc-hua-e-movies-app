@@ -125,7 +125,7 @@ pipeline {
                     | kubectl apply -f -
                     
                     kubectl create secret generic k8s-host \
-                    --from-literal=HOST=$HOSTS \
+                    --from-literal=HOST=$HOSTS --dry-run -o yaml \
                     | kubectl apply -f -
                     
                     cd ~/workspace/ansible-movie-code
