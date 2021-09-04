@@ -18,6 +18,12 @@ DATABASE_URL=sqlite:///./db.sqlite3
 ALLOWED_HOSTS=localhost
 ```
 
+If you want to run it with PostgreSQL Database visit the [link](https://www.youtube.com/watch?v=RAFZleZYxsc) and change DATABASE_URL above as:
+```bash
+DATABASE_URL=postgresql://<DB-USERNAME>:<DB-PASSWORD>@localhost/<DB-NAME>
+``` 
+after you have created a database using [pgAdmin](https://www.youtube.com/watch?v=1wvDVBjNDys)
+
 ### Database migration
 ```bash
 python manage.py makemigrations && python manage.py migrate
@@ -41,6 +47,8 @@ We are going to need 4 VMs. One for the jenkins server and one for each executio
 * [Create VM in Azure Portal](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-portal)
 * [SSH Access to VMs](https://help.skytap.com/connect-to-a-linux-vm-with-ssh.html)
 * [SSH Automation](https://linuxize.com/post/using-the-ssh-config-file/)
+* [Reserve Static IP in Gcloud](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address)
+* [Reserve Static IP in Azure](https://azure.microsoft.com/en-au/resources/videos/azure-friday-how-to-reserve-a-public-ip-range-in-azure-using-public-ip-prefix/)
 
 ### CI/CD tool configuration (Jenkins Server)
 
@@ -53,6 +61,11 @@ In order to be able to use Ansible for automation, there is the [ansible-movie-p
 ### Deployment with Docker and docker-compose using Ansible
 
 ### Deployment using Kubernetes and a few things from Ansible
+
+## Creating Domain Names
+### DNS Zone
+
+### A and CNAME records
 
 ## Installing SSL Certificates
 ### in pure Ansible environment
