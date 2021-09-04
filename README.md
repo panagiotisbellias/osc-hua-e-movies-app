@@ -2,7 +2,7 @@
 E-Movies App, a Django project in the context of HUA DIT course 'Basic DevOps Concepts and Tools'
 
 ## Run project locally
-### Clone and run project locally
+### Clone and initialize project
 ```bash
 git clone https://github.com/panagiotisbellias/e-movies-app 
 python3 -m venv myvenv
@@ -11,7 +11,7 @@ pip install -r requirements.txt
 cd movies_app
 cp movies_app/.env.example movies_app/.env
 ```
-edit movies_app/.env file to define
+Edit movies_app/.env file to define
 ```vim
 SECRET_KEY='test123'
 DATABASE_URL=sqlite:///./db.sqlite3
@@ -65,6 +65,50 @@ In order to deploy our project in Docker environment, we use again the [ansible-
 * [More Info Here](https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md)
 
 ### Deployment using Kubernetes and a few things from Ansible
+
+In order to deploy our project in Kubernetes cluster, we first need to connect to that VM so as to configure a better connection between local PC or jenkins server and deployment vm's:
+
+* [installing microk8s](https://ubuntu.com/tutorials/install-a-local-kubernetes-with-microk8s#2-deploying-microk8s)
+* Do this trick to write less in terminal
+```bash
+echo "alias k='microk8s.kubectl' " >> ~/.profile
+```
+The permanent alias will be applied only if you reconnect to your VM.
+
+#### Cluster Configuration & Enable Addons
+```bash
+sudo usermod -a -G microk8s <your-username>
+sudo chown -f -R <your-username> ~/.kube
+microk8s enable dns dashboard storage ingress
+microk8s status
+```
+
+#### Connect Kubernetes Cluster with Local PC or/and Jenkins server
+```bash
+# VM's terminal
+k config view --raw > kube-config
+cat kube-config
+
+# Local terminal
+mkdir ~/.kube
+scp <vm-name>:/home/<vm-username>/kube-config ~/.kube/config
+```
+Edit ~/.kube/config to replace the 127.0.0.1 with the VM's public ip and the certificate line in clusters section with the below line (not used this way in a real production environment)
+```bash
+insecure-skip-tls-verify: true
+```
+
+* Don't forget to add a firewall rule for the port specified in the ~/.kube/config file
+With ```bash
+kubectl get po
+```
+you can ensure that the connection is established.
+
+If you use CI/CD tool and mostly Jenkins do the following:
+```bash
+# Jenkins terminal
+
+```
 
 ## Creating Domain Names
 ### DNS Zone
