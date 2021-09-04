@@ -26,6 +26,4 @@ urlpatterns = [
     path('accounts/signup/', views.SignUpView.as_view(), name='signup'),
     path('accounts/signup/viewer/', views.ViewerSignUpView.as_view(), name='viewer_signup'),
     path('accounts/signup/manager/', views.ManagerSignUpView.as_view(), name='manager_signup'),
-    path('accounts/signup/make_request/', views.make_request, name='manager_requesting'),
-    path('accounts/signup/manager_approved/<str:username>', views.approved, name='manager_approved'),
 ]

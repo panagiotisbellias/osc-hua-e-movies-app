@@ -1,5 +1,57 @@
-{ extends 'base.html' }
-{ block body_block }
+{% extends 'base.html' %}
+
+{% block body_block %}
     <h1><b>App Documentation</b></h1>
-    <p>Information</p>
-{ endblock }
+    <p><b>Information</p></b>
+<p>E-Movies App, a Django project in the context of HUA DIT course 'Basic DevOps Concepts and Tools'</p>
+<h2 id="run-project-locally">Run project locally</h2>
+<h3 id="clone-and-run-project-locally">Clone and run project locally</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">git</span> clone https://github.com/panagiotisbellias/e-movies-app 
+<span class="kw">python3</span> -m venv myvenv
+<span class="kw">source</span> myvenv/bin/activate
+<span class="kw">pip</span> install -r requirements.txt
+<span class="kw">cd</span> movies_app
+<span class="kw">cp</span> movies_app/.env.example movies_app/.env</code></pre>
+<p>edit movies_app/.env file to define</p>
+<pre class="vim"><code>SECRET_KEY=&#39;test123&#39;
+DATABASE_URL=sqlite:///./db.sqlite3
+ALLOWED_HOSTS=localhost</code></pre>
+<p>If you want to run it with PostgreSQL Database visit the <a href="https://www.youtube.com/watch?v=RAFZleZYxsc">link</a> and change DATABASE_URL above as:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="ot">DATABASE_URL=</span>postgresql://<span class="kw">&lt;DB-USERNAME&gt;</span>:<span class="kw">&lt;</span>DB-PASSWORD<span class="kw">&gt;</span>@localhost/<span class="kw">&lt;</span>DB-NAME<span class="kw">&gt;</span></code></pre>
+<p>after you have created a database using <a href="https://www.youtube.com/watch?v=1wvDVBjNDys">pgAdmin</a></p>
+<h3 id="database-migration">Database migration</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> manage.py makemigrations <span class="kw">&amp;&amp;</span> <span class="kw">python</span> manage.py migrate</code></pre>
+<h3 id="run-development-server">Run development server</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> manage.py runserver</code></pre>
+<h3 id="alternatively-run-gunicorn-application-server">Alternatively, run gunicorn application server</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">gunicorn</span> --bind 0.0.0.0:8000 movies_app.wsgi:application</code></pre>
+<h2 id="deploy-django-project-to-a-vm-virtual-machine">Deploy django project to a VM (Virtual Machine)</h2>
+<p>We are going to need 4 VMs. One for the jenkins server and one for each execution environment (ansible, docker and kubernetes)</p>
+<ul>
+<li><a href="https://cloud.google.com/compute/docs/instances/create-start-instance">Create VM in Gcloud</a></li>
+<li><a href="https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-portal">Create VM in Azure Portal</a></li>
+<li><a href="https://help.skytap.com/connect-to-a-linux-vm-with-ssh.html">SSH Access to VMs</a></li>
+<li><a href="https://linuxize.com/post/using-the-ssh-config-file/">SSH Automation</a></li>
+<li><a href="https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address">Reserve Static IP in Gcloud</a></li>
+<li><a href="https://azure.microsoft.com/en-au/resources/videos/azure-friday-how-to-reserve-a-public-ip-range-in-azure-using-public-ip-prefix/">Reserve Static IP in Azure</a></li>
+</ul>
+<h3 id="cicd-tool-configuration-jenkins-server">CI/CD tool configuration (Jenkins Server)</h3>
+<h3 id="deployment-with-pure-ansible">Deployment with pure Ansible</h3>
+<p>In order to be able to use Ansible for automation, there is the <a href="https://github.com/panagiotisbellias/ansible-movie-code.git">ansible-movie-project</a>. There is installation and usage guide.</p>
+<ul>
+<li><a href="https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md">More Details</a></li>
+</ul>
+<h3 id="deployment-with-docker-and-docker-compose-using-ansible">Deployment with Docker and docker-compose using Ansible</h3>
+<h3 id="deployment-using-kubernetes-and-a-few-things-from-ansible">Deployment using Kubernetes and a few things from Ansible</h3>
+<h2 id="creating-domain-names">Creating Domain Names</h2>
+<h3 id="dns-zone">DNS Zone</h3>
+<h3 id="a-and-cname-records">A and CNAME records</h3>
+<h2 id="installing-ssl-certificates">Installing SSL Certificates</h2>
+<h3 id="in-pure-ansible-environment">in pure Ansible environment</h3>
+<h3 id="in-docker-environment">in Docker environment</h3>
+<h3 id="in-kubernetes-environment">in Kubernetes environment</h3>
+<h1 id="extra-things-for-exploration">Extra things for exploration</h1>
+<ul>
+<li><a href="https://code.visualstudio.com/docs/remote/wsl">Using Visual Studio Code with WSL</a></li>
+</ul>
+{% endblock %}

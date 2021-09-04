@@ -2,8 +2,7 @@
 
 {% block body_block %}
   <h2>Choose action</h2>
-  <p class="lead">Do you want to see the existing movies or review the registration requests?</p>
+  <p class="lead">Do you want to see the existing movies or go to admin panel?</p>
   <a href="{% url 'index' %}" class="btn btn-viewer btn-lg" role="button">Movies</a>
-  <a href="{% url 'registration_requests' %}" class="btn btn-manager btn-lg" role="button">Registration Requests</a>
-  <a href="/admin" class="btn btn-manager btn-lg" role="button">Django Admin Panel</a>
+  <a href="/admin" class="btn btn-manager btn-lg" role="button">Admin Panel</a>
 {% endblock %}
