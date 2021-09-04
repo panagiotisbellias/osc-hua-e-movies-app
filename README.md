@@ -37,10 +37,10 @@ gunicorn --bind 0.0.0.0:8000 movies_app.wsgi:application
 
 We are going to need 4 VMs. One for the jenkins server and one for each execution environment (ansible, docker and kubernetes)
 
-[Create VM in Gcloud](https://cloud.google.com/compute/docs/instances/create-start-instance)
-[Create VM in Azure Portal](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-portal)
-[SSH Access to VMs](https://help.skytap.com/connect-to-a-linux-vm-with-ssh.html)
-[SSH Automation](https://linuxize.com/post/using-the-ssh-config-file/)
+* [Create VM in Gcloud](https://cloud.google.com/compute/docs/instances/create-start-instance)
+* [Create VM in Azure Portal](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-portal)
+* [SSH Access to VMs](https://help.skytap.com/connect-to-a-linux-vm-with-ssh.html)
+* [SSH Automation](https://linuxize.com/post/using-the-ssh-config-file/)
 
 ### CI/CD tool configuration (Jenkins Server)
 
@@ -48,7 +48,7 @@ We are going to need 4 VMs. One for the jenkins server and one for each executio
 
 In order to be able to use Ansible for automation, there is the [ansible-movie-project](https://github.com/panagiotisbellias/ansible-movie-code.git). There is installation and usage guide.
 
-[More Details](https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md)
+* [More Details](https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md)
 
 ### Deployment with Docker and docker-compose using Ansible
 
@@ -62,4 +62,4 @@ In order to be able to use Ansible for automation, there is the [ansible-movie-p
 ### in Kubernetes environment
 
 # Extra things for exploration
-[Using Visual Studio Code with WSL](https://code.visualstudio.com/docs/remote/wsl)
+* [Using Visual Studio Code with WSL](https://code.visualstudio.com/docs/remote/wsl)
