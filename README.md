@@ -99,8 +99,9 @@ insecure-skip-tls-verify: true
 ```
 
 * Don't forget to add a firewall rule for the port specified in the ~/.kube/config file
-With ```bash
-kubectl get po
+With
+```bash
+kubectl get pods
 ```
 you can ensure that the connection is established.
 
@@ -109,6 +110,11 @@ If you use CI/CD tool and mostly Jenkins do the following:
 # Jenkins terminal
 
 ```
+
+#### Kubernetes Entities
+Either manually or via jenkins server using Jenkinsfile and secret texts the following will do the trick! The code is located in [k8s](k8s) folder.
+
+##### test
 
 ## Creating Domain Names
 ### DNS Zone
@@ -124,3 +130,4 @@ If you use CI/CD tool and mostly Jenkins do the following:
 
 # Extra things for exploration
 * [Using Visual Studio Code with WSL](https://code.visualstudio.com/docs/remote/wsl)
+* [k9s tool - handle kubernetes clusters](https://github.com/derailed/k9s)
