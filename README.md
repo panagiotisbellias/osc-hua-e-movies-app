@@ -1,7 +1,7 @@
 # e-movies-app
 E-Movies App, a Django project in the context of HUA DIT course 'Basic DevOps Concepts and Tools'
 
-## Clone and run project
+## Clone and run project locally
 ```bash
 git clone https://github.com/panagiotisbellias/e-movies-app 
 python3 -m venv myvenv
@@ -14,18 +14,17 @@ edit movies_app/.env file to define
 ```vim
 SECRET_KEY='test123'
 DATABASE_URL=sqlite:///./db.sqlite3
-ALLOWED_HOSTS=127.0.0.1,localhost
+ALLOWED_HOSTS=localhost
 ```
-## database migration and superuser creation
+## Database migration
 ```bash
-python manage.py migrate
-python manage.py createsuperuser # answer to the prompts to make your admin profile with a valid email address
+python manage.py makemigrations && python manage.py migrate
 ```
-## run development server
+## Run development server
 ```bash
 python manage.py runserver
 ```
-## alternatively, run application server we have installed via pip
+## Alternatively, run gunicorn application server
 ```bash
 gunicorn --bind 0.0.0.0:8000 movies_app.wsgi:application
 ```
