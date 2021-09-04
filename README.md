@@ -34,6 +34,9 @@ gunicorn --bind 0.0.0.0:8000 movies_app.wsgi:application
 ```
 
 ## Deploy django project to a VM (Virtual Machine)
+
+[test](www.google.gr)
+
 ### CI/CD tool configuration (Jenkins Server)
 
 ### Deployment with pure Ansible
