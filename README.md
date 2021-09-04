@@ -19,7 +19,7 @@ ALLOWED_HOSTS=localhost
 ```
 
 If you want to run it with PostgreSQL Database visit the [link](https://www.youtube.com/watch?v=RAFZleZYxsc) and change DATABASE_URL above as:
-```bash
+```vim
 DATABASE_URL=postgresql://<DB-USERNAME>:<DB-PASSWORD>@localhost/<DB-NAME>
 ``` 
 after you have created a database using [pgAdmin](https://www.youtube.com/watch?v=1wvDVBjNDys)
@@ -59,6 +59,10 @@ In order to be able to use Ansible for automation, there is the [ansible-movie-p
 * [More Details](https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md)
 
 ### Deployment with Docker and docker-compose using Ansible
+
+In order to deploy our project in Docker environment, we use again the [ansible-movie-project](https://github.com/panagiotisbellias/ansible-movie-code.git) where we use a playbook that uses an Ansible role to run the application with docker-compose according to the [docker-compose.yml](docker-compose.yml). In that file, we have defined three services, the postgres container with its volume in order to be able to store data, the django container for our app taking environmental variables from local .env file (it's ready when we run the playbook from jenkins-server where the sensitive values from environmental variables are parametric). The django container is built according to the [nonroot.Dockerfile](nonroot.Dockerfile) as a nonroot process for safety reasons. Also, the nginx container is defined to start so as to have a web server in front of django container and to be able to pass SSL certificates for HTTPS environment. For the HTTPS part we will talk about [later](https://github.com/panagiotisbellias/e-movies-app#in-docker-environment).
+
+* [More Info Here](https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md)
 
 ### Deployment using Kubernetes and a few things from Ansible
 
