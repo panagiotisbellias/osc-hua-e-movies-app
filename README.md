@@ -105,16 +105,39 @@ kubectl get pods
 ```
 you can ensure that the connection is established.
 
-If you use CI/CD tool and mostly Jenkins do the following:
+If you use CI/CD tool and mostly Jenkins do the following (for better deployment fork the repository to be able to change code where needed):
 ```bash
 # Jenkins terminal
 
 ```
 
 #### Kubernetes Entities
-Either manually or via jenkins server using Jenkinsfile and secret texts the following will do the trick! The code is located in [k8s](k8s) folder.
+Either manually or via jenkins server using Jenkinsfile and secret texts the following will do the trick! The code is located in [k8s](k8s) folder. (The .yaml files)
 
-##### test
+```bash
+# Persistent Volume Claim
+kubectl apply -f db/postgres-pvc.yaml
+
+# Secret (for the postgresql database)
+kubectl create secret generic pg-user \
+--from-literal=PGUSER=<put user name here> \
+--from-literal=PGPASSWORD=<put password here>
+
+# Config Map (for .env variables)
+vim movies_app/movies_app/.env # change to the correct values
+kubectl create configmap django-config --from-env-file=movies_app/movies_app/.env
+
+# Deployments
+kubectl apply -f db/postgres-deployment.yaml
+kubectl apply -f django/django-deployment.yaml
+
+# Services (Cluster IPs)
+kubectl apply -f db/postgres-clip.yaml
+kubectl apply -f django/django-clip.yaml
+
+# Ingress (For just HTTP - Edit file changing host to your own dns name)
+kubectl apply -f django/django-ingress.yaml
+```
 
 ## Creating Domain Names
 ### DNS Zone
@@ -131,3 +154,4 @@ Either manually or via jenkins server using Jenkinsfile and secret texts the fol
 # Extra things for exploration
 * [Using Visual Studio Code with WSL](https://code.visualstudio.com/docs/remote/wsl)
 * [k9s tool - handle kubernetes clusters](https://github.com/derailed/k9s)
+* [Static files in Kubernetes - whitenoise](http://whitenoise.evans.io/en/stable/)
