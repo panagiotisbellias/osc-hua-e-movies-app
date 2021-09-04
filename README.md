@@ -1,5 +1,6 @@
 # e-movies-app
 E-Movies App, a Django project in the context of HUA DIT course 'Basic DevOps Concepts and Tools'
+
 ## Run project locally
 ### Clone and run project locally
 ```bash
@@ -16,15 +17,34 @@ SECRET_KEY='test123'
 DATABASE_URL=sqlite:///./db.sqlite3
 ALLOWED_HOSTS=localhost
 ```
+
 ### Database migration
 ```bash
 python manage.py makemigrations && python manage.py migrate
 ```
+
 ### Run development server
 ```bash
 python manage.py runserver
 ```
+
 ### Alternatively, run gunicorn application server
 ```bash
 gunicorn --bind 0.0.0.0:8000 movies_app.wsgi:application
 ```
+
+## Deploy django project to a VM (Virtual Machine)
+### CI/CD tool configuration (Jenkins Server)
+
+### Deployment with pure Ansible
+
+### Deployment with Docker and docker-compose using Ansible
+
+### Deployment using Kubernetes and a few things from Ansible
+
+## Installing SSL Certificates
+### in pure Ansible environment
+
+### in Docker environment
+
+### in Kubernetes environment
