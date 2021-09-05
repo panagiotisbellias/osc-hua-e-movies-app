@@ -306,7 +306,7 @@ scp private.key docker-vm:/home/azureuser/e-movies-app/assets/nginx/certs/server
 docker-compose up --build
 docker-compose down
 ```
-to apply the changes. Before scaling down the containers go and check what you have done in **https://<DNS-A-RECORD-FOR-DOCKER-VM>/**
+to apply the changes. Before scaling down the containers go and check what you have done in **https://DNS-A-RECORD-FOR-DOCKER-VM/**
 
 ### in Kubernetes environment
 
@@ -314,16 +314,18 @@ After you have certificates for k8s-vm too (you can use same local folder as bef
 
 NOTE: No concatenation needed here. We want the 3 files that [ZeroSSL](https://zerossl.com/) gave us.
 
-Make a secret and apply the https ingress controller we have in .yaml file in [k8s folder](k8s)(Edit file changing host to your own dns name):
+Make a secret and apply the https ingress controller we have in .yaml file in [k8s folder](k8s) (Edit [file](k8s/django/django-https-ingress.yaml) changing host to your own dns name):
 ```bash
 kubectl create secret generic tls-secret \
---from-file=tls.crt=certificate.crt --from-file=tls.key=private.key \
+--from-file=tls.crt=certificate.crt \
+--from-file=tls.key=private.key \
 --from-file=ca.crt=ca_bundle.crt
 
+cd k8s
 kubectl apply -f django/django-https-ingress.yaml
 ```
 
-Go and check what you have done in **https://<DNS-A-RECORD-FOR-DOCKER-VM>/**
+Go and check what you have done in **https://DNS-A-RECORD-FOR-K8S-VM/**
 
 # Extra things for exploration
 * [Using Visual Studio Code with WSL](https://code.visualstudio.com/docs/remote/wsl)
