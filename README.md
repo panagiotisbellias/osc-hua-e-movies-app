@@ -98,21 +98,39 @@ k8s-hosts           the domain name for your k8s vm
 
 In the django job the pipeline will be the [Jenkinsfile](Jenkinsfile)
 
+##### Build stage
+Takes the code from the git repository
+##### Test stage
+Activates a virtual environment, installs the requirements, copies the .env.example to use it as .env with some demo values for testing and executes the tests.py file so the application can be tested before goes on production.
+NOTE: connect to your jenkins vm and do the below line so the test stage can run
+```bash
+<username>@<vm-name>:~$ sudo apt-get install libpcap-dev libpq-dev
+```
+##### Ansible Deployment
+Ansible connects to the ansible-vm through ssh agent and the ssh key we define there and runs a playbook for postgres database configuration and django site configuration passing the sensitive parameters from secret texts.
+
+##### Docker Deployment
+Ansible connects to the docker-vm through ssh and runs a playbook that it will define the sensitive parameters and will use docker-compose module to do docker-compose up the containers according to [docker-compose.yml](docker-compose.yml)
+
+##### Preparing k8s Deployment
+Here, to deploy our app we need a docker image updated. So we build the image according to [nonroot.Dockerfile](nonroot.Dockerfile), we are logging in Dockerhub and push the image there to be public available.
+
+##### Kubernetes Deployment
+After we have [configure connection](https://github.com/panagiotisbellias/e-movies-app#connect-kubernetes-cluster-with-local-pc-orand-jenkins-server) between jenkins user and our k8s cluster, we update secrets and configmaps using also some Ansible to populate ~/.env values and create all the needed entities such as persistent volume claims, deployments, cluster IPs, ingress, services.
+
+Secrets and ConfigMaps could be just prepared from earlier. This is applied to the https ingress, we will see later in [SSL configuration](https://github.com/panagiotisbellias/e-movies-app#in-kubernetes-environment)
 
 ### Deployment with pure Ansible
-
 In order to be able to use Ansible for automation, there is the [ansible-movie-project](https://github.com/panagiotisbellias/ansible-movie-code.git). There is installation and usage guide.
 
 * [More Details](https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md)
 
 ### Deployment with Docker and docker-compose using Ansible
-
 In order to deploy our project in Docker environment, we use again the [ansible-movie-project](https://github.com/panagiotisbellias/ansible-movie-code.git) where we use a playbook that uses an Ansible role to run the application with docker-compose according to the [docker-compose.yml](docker-compose.yml). In that file, we have defined three services, the postgres container with its volume in order to be able to store data, the django container for our app taking environmental variables from local .env file (it's ready when we run the playbook from jenkins-server where the sensitive values from environmental variables are parametric). The django container is built according to the [nonroot.Dockerfile](nonroot.Dockerfile) as a nonroot process for safety reasons. Also, the nginx container is defined to start so as to have a web server in front of django container and to be able to pass SSL certificates for HTTPS environment. For the HTTPS part we will talk about [later](https://github.com/panagiotisbellias/e-movies-app#in-docker-environment).
 
 * [More Info Here](https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md)
 
 ### Deployment using Kubernetes and a few things from Ansible
-
 In order to deploy our project in Kubernetes cluster, we first need to connect to that VM so as to configure a better connection between local PC or jenkins server and deployment vm's:
 
 * [installing microk8s](https://ubuntu.com/tutorials/install-a-local-kubernetes-with-microk8s#2-deploying-microk8s)
