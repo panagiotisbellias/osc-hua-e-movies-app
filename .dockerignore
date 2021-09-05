@@ -3,7 +3,10 @@
 *.mo
 *.db
 myvenv
-Dockerfile
+nonroot.Dockerfile
 Jenkinsfile
+docker-compose.yml
 README.md
+.gitignore
 *.sqlite3
+LICENSE
