@@ -306,7 +306,7 @@ scp private.key docker-vm:/home/azureuser/e-movies-app/assets/nginx/certs/server
 docker-compose up --build
 docker-compose down
 ```
-to apply the changes. Before scaling down the containers go and check what you have done in **https://**<DNS-A-RECORD-FOR-DOCKER-VM>/
+to apply the changes. Before scaling down the containers go and check what you have done in https://<DNS-A-RECORD-FOR-DOCKER-VM>/
 
 ### in Kubernetes environment
 
@@ -325,7 +325,7 @@ cd k8s
 kubectl apply -f django/django-https-ingress.yaml
 ```
 
-Go and check what you have done in **https://**<DNS-A-RECORD-FOR-K8S-VM>/
+Go and check what you have done in https://<DNS-A-RECORD-FOR-K8S-VM>/
 
 # Extra things for exploration
 * [Using Visual Studio Code with WSL](https://code.visualstudio.com/docs/remote/wsl)
