@@ -173,8 +173,24 @@ you can ensure that the connection is established.
 If you use CI/CD tool and mostly Jenkins do the following (for better deployment fork the repository to be able to change code where needed):
 ```bash
 # Jenkins terminal
+sudo su
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+su jenkins
+cd
 
+# Local terminal
+scp ~/.kube/config <jenkins-vm-name>:/tmp/config
+
+# Jenkins terminal
+mkdir -p .kube
+cp /tmp/config ~/.kube/
 ```
+With
+```bash
+kubectl get pods
+```
+you can ensure that the connection is established.
 
 #### Kubernetes Entities
 Either manually or via jenkins server using Jenkinsfile and secret texts the following will do the trick! The code is located in [k8s](k8s) folder. (The .yaml files)
@@ -218,11 +234,22 @@ exit # or press ctrl-D to exit container's bash
 ```
 
 ## Creating Domain Names
+* [Go here](https://www.cloudns.net/) to make a free account.
+
 ### DNS Zone
+* [Go here](https://www.cloudns.net/wiki/article/355/) to make a DNS zone with a general name and a fixed ending. Each VM later will have one more word in front of the DNS zone as you will see.
 
 ### A and CNAME records
+* [Make A records]() for your VMs.
+
+* [Make CNAME records]() when you will need to verify your domain names at the SSL installation.
 
 ## Installing SSL Certificates
+
+* [Take SSL certificates from here](https://zerossl.com/) for each VM you have, making an account or more when free certificates are over. (Usually 3 certificates per account)
+
+### in Jenkins VM
+
 ### in pure Ansible environment
 
 ### in Docker environment
