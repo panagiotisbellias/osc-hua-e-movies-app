@@ -7,8 +7,6 @@ pipeline {
         DB_PASS=credentials('psql-pass')
         DB_NAME=credentials('psql-db')
         SECRET_KEY=credentials('django-key')
-        MAIL_USER=credentials('mail-user')
-        MAIL_PASS=credentials('mail-pass')
     }
 
     stages {
@@ -33,7 +31,7 @@ pipeline {
                 '''
             }
         }
-        /*
+
         stage('Ansible Deployment') {
 
             environment {
@@ -54,9 +52,7 @@ pipeline {
                     ansible-playbook -l gcloud_ansible playbooks/django-install.yml \
                     -e SECRET_KEY='$SECRET_KEY' \
                     -e DATABASE_URL=$DB_URL \
-                    -e ALLOWED_HOSTS=$HOSTS \
-                    -e EMAIL_USER=$MAIL_USER \
-                    -e EMAIL_PASSWD=$MAIL_PASS
+                    -e ALLOWED_HOSTS=$HOSTS
                     '''
                 }
             }
@@ -70,21 +66,17 @@ pipeline {
             }
 
             steps {
-                sshagent (credentials: ['ssh-azure']) {
+                sshagent (credentials: ['ssh-docker-vm']) {
                     sh '''
                         cd ~/workspace/ansible-movie-code
-                        ansible-playbook -l azure_docker playbooks/install-docker-compose.yml
-                        ansible-playbook -l azure_docker playbooks/django-docker.yml \
+                        ansible-playbook -l gcloud_docker playbooks/django-docker.yml \
                         -e SECRET_KEY=$SECRET_KEY \
                         -e DATABASE_URL=$DB_URL \
-                        -e ALLOWED_HOSTS=$HOSTS \
-                        -e EMAIL_USER=$MAIL_USER \
-                        -e EMAIL_PASSWD=$MAIL_PASS
+                        -e ALLOWED_HOSTS=$HOSTS
                     '''
                 }
             }
         }
-        */
 
         stage('Preparing k8s Deployment') {
 
@@ -128,9 +120,7 @@ pipeline {
                     ansible-playbook playbooks/django-populate-env.yml \
                     -e SECRET_KEY=$SECRET_KEY \
                     -e DATABASE_URL=$DB_URL \
-                    -e ALLOWED_HOSTS=$HOSTS \
-                    -e EMAIL_USER=$MAIL_USER \
-                    -e EMAIL_PASSWD=$MAIL_PASS
+                    -e ALLOWED_HOSTS=$HOSTS
                     
                     cd ~/workspace/e-movies-app
                     kubectl create configmap django-config \
