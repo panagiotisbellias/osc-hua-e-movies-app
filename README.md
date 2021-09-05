@@ -52,6 +52,53 @@ We are going to need 4 VMs. One for the jenkins server and one for each executio
 
 ### CI/CD tool configuration (Jenkins Server)
 
+* [Install Jenkins](https://www.jenkins.io/doc/book/installing/linux/)
+
+Make sure service is running
+```bash
+sudo systemctl status jenkins
+netstat -anlp | grep 8080 # needs package net-tools
+```
+
+#### Step 1: Configure Shell
+Go to Dashboard / Manage Jenkins / Configure System / Shell / Shell Executable and type '/bin/bash'
+
+#### Step 2: Add webhooks both to django and ansible repositories
+[Dublicate](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/duplicating-a-repository) repositories for easier configuration.
+
+* [Add Webhooks - see until Step 4](https://www.blazemeter.com/blog/how-to-integrate-your-github-repository-to-your-jenkins-project)
+
+#### Step 3: Add the credentials needed
+
+* [Add SSH keys & SSH Agent plugin](https://plugins.jenkins.io/ssh-agent/) with id 'ssh-ansible-vm' to access ansible-vm, and 'ssh-docker-vm' to access docker-vm
+* [Add Secret Texts](https://www.jenkins.io/doc/book/using/using-credentials/) for every environmental variable we need to define in our projects during deployment, like below
+
+```vim
+# ID                What is the value?
+psql-user           a username you choose for the db user
+psql-pass           a password you choose for the db user
+psql-db             a name you choose for your database - must be aligned with the db-urls below
+django-key          the django secret key - can be a random string
+ansible-db-url      'postgresql://<db-user-name>:<db-user-password>@localhost/<db-name>'
+ansible-hosts       the domain name for your ansible vm
+docker-db-url       'postgresql://<db-user-name>:<db-user-password>@db/<db-name>'
+docker-hosts        the domain name for your docker vm
+docker-image        the docker image as it is named in Dockerhub (e.g. belpanos/django-movies)
+docker-user         your username for Dockerhub
+docker-pass         your password for Dockerhub
+k8s-db-url          postgresql://<db-user-name>:<db-user-password>@pg-cluster-ip/<db-name> # NO QUOTES TO AVOID PROBLEMS
+k8s-hosts           the domain name for your k8s vm
+```
+
+#### Create Jobs
+* [Create Freestyle project for Ansible code](https://www.guru99.com/create-builds-jenkins-freestyle-project.html)
+* [More for Ansible](https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md)
+* [Create Pipeline project](https://www.jenkins.io/doc/pipeline/tour/hello-world/)
+* [Add Webhooks to both jobs - see until Step 9](https://www.blazemeter.com/blog/how-to-integrate-your-github-repository-to-your-jenkins-project)
+
+In the django job the pipeline will be the [Jenkinsfile](Jenkinsfile)
+
+
 ### Deployment with pure Ansible
 
 In order to be able to use Ansible for automation, there is the [ansible-movie-project](https://github.com/panagiotisbellias/ansible-movie-code.git). There is installation and usage guide.
@@ -114,6 +161,10 @@ If you use CI/CD tool and mostly Jenkins do the following (for better deployment
 #### Kubernetes Entities
 Either manually or via jenkins server using Jenkinsfile and secret texts the following will do the trick! The code is located in [k8s](k8s) folder. (The .yaml files)
 
+* Don't forget to have a docker image in DockerHub with the project because the deployment entity for django uses it. You can follow the logic located in Jenkinsfile in the 'Preparing k8s Deployment' stage. You must have docker installed in your local machine (or jenkins server)
+
+* [Docker Image](https://hub.docker.com/repository/docker/belpanos/django-movies)
+
 ```bash
 # Persistent Volume Claim
 kubectl apply -f db/postgres-pvc.yaml
@@ -137,6 +188,15 @@ kubectl apply -f django/django-clip.yaml
 
 # Ingress (For just HTTP - Edit file changing host to your own dns name)
 kubectl apply -f django/django-ingress.yaml
+
+# For possible errors with init-containers & migrations do this
+kubectl get pods # to see the full name of django pod (e.g. django-r4nd0m-str1n0)
+kubectl exec -it <pod name> bash # to apply migrations manually inside pod
+
+# Now inside the container's bash shell
+python manage.py makemigrations && python manage.py migrate ## to migrate database
+python manage.py createsuperuser # and answer the prompts in case you want to have an admin present
+exit # or press ctrl-D to exit container's bash
 ```
 
 ## Creating Domain Names
@@ -153,5 +213,6 @@ kubectl apply -f django/django-ingress.yaml
 
 # Extra things for exploration
 * [Using Visual Studio Code with WSL](https://code.visualstudio.com/docs/remote/wsl)
+* [Install Docker](https://dev.to/semirteskeredzic/docker-docker-compose-on-ubuntu-20-04-server-4h3k)
 * [k9s tool - handle kubernetes clusters](https://github.com/derailed/k9s)
 * [Static files in Kubernetes - whitenoise](http://whitenoise.evans.io/en/stable/)
