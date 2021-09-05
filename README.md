@@ -332,3 +332,5 @@ Go and check what you have done in https:// followed by your A record
 * [Install Docker](https://dev.to/semirteskeredzic/docker-docker-compose-on-ubuntu-20-04-server-4h3k)
 * [k9s tool - handle kubernetes clusters](https://github.com/derailed/k9s)
 * [Static files in Kubernetes - whitenoise](http://whitenoise.evans.io/en/stable/)
+
+## It's our pleasure to contact us at our social media or at github [issues](https://github.com/panagiotisbellias/e-movies-app/issues)
