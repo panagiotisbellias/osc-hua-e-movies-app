@@ -2,7 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login
 from django.test import TestCase
 
-from .models import ManagerRequest, User
+from .models import User
 
 # Auth Tests
 class AuthenticationTests(TestCase):
@@ -13,19 +13,6 @@ class AuthenticationTests(TestCase):
            username=username,
            password=make_password('viewerpasswd'),
            is_viewer=True
-        )
-        return username
-
-    def newManagerRequest(self):
-        username='manager_test'
-        ManagerRequest.objects.create(
-            first_name='Manager',
-            last_name='Test',
-            username = username,
-            email = 'test@mail.com',
-            password = 'managerpasswd',
-            reason = 'test_reason',
-            is_manager = True
         )
         return username
 
