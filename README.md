@@ -237,24 +237,93 @@ exit # or press ctrl-D to exit container's bash
 * [Go here](https://www.cloudns.net/) to make a free account.
 
 ### DNS Zone
-* [Go here](https://www.cloudns.net/wiki/article/355/) to make a DNS zone with a general name and a fixed ending. Each VM later will have one more word in front of the DNS zone as you will see.
+* [Go here](https://www.cloudns.net/wiki/article/29/) to make a DNS zone with a general name and a fixed ending. Each VM later will have one more word in front of the DNS zone as you will see.
 
 ### A and CNAME records
-* [Make A records]() for your VMs.
+* [Make A records](https://www.cloudns.net/wiki/article/10/) for your VMs.
 
-* [Make CNAME records]() when you will need to verify your domain names at the SSL installation.
+* [Make CNAME records](https://www.cloudns.net/wiki/article/13/) when you will need to verify your domain names at the SSL installation.
 
 ## Installing SSL Certificates
 
 * [Take SSL certificates from here](https://zerossl.com/) for each VM you have, making an account or more when free certificates are over. (Usually 3 certificates per account)
 
+Make Account / New Certificate / Enter your domain name (A record) / 90-Day Certificate / Verify Domain / DNS (CNAME)
+
+Now, follow the steps and add the CNAME record the instructions tell you. When done press 'verify domain'.
+
+Choose Server Format: NGINX / Install Certificate / Download .zip file
+
+[General Installation Instructions](https://help.zerossl.com/hc/en-us/articles/360058295894-Installing-SSL-Certificate-on-NGINX) which are described better below for each execution environment.
+
 ### in Jenkins VM
+
+Let's assume that we have done the wanted concatenation and now we have the certificate.crt and the private.key files. These files should be moved in the cloned [ansible-movie-code](https://github.com/panagiotisbellias/ansible-movie-code.git) project under the path 'files/certs/jenkins' inside that folder. In case you have repo duplicated and push code the .gitignore protects these files from become visible.
+
+So now we run from our local PC (where we have already set ssh connection between Ansible and Jenkins) the related playbook.
+```bash
+ansible-playbook -l <group-name with jenkins-vm> playbooks/jenkins-config.yml
+```
 
 ### in pure Ansible environment
 
+Now we want the certificate files for ansible-vm to be located under 'files/certs/django' inside that folder.
+So we can run the related playbook.
+```bash
+ansible-playbook -l <group-name with ansible-vm> playbooks/ansible-https.yml
+```
+
 ### in Docker environment
 
+Here we need to do the work manually. So,
+
+#### Step 1: Connect to VM and install docker
+
+* Connect to docker-vm via SSH.
+* Install Docker and docker-compose if they aren't already installed.
+
+#### Step 2: Configure Django project and it's files
+
+* Clone the django project and go inside the root folder.
+* Edit the docker-compose.yml and uncomment commented lines.
+* Copy the .env.example to .env
+* Make directory 'certs' under 'assets/nginx' both locally and in VM.
+* Edit 'assets/nginx/nginx.http.config' & uncomment 1st, 3rd and 4th commented line.
+
+### Step 3: Pass certificates in project's folder
+
+* Save locally the certificate in the 'assets/nginx/certs' folder and do the concatenation if it hasn't been done already.
+* Copy them in the VM going in 'assets/nginx/certs' folder and using scp like below:
+```bash
+scp certificate.crt docker-vm:/home/<username>/e-movies-app/assets/nginx/certs/server.crt
+scp private.key docker-vm:/home/azureuser/e-movies-app/assets/nginx/certs/server.key
+```
+
+### Step 4: Run docker-compose
+
+* Run
+```bash
+docker-compose up --build
+docker-compose down
+```
+to apply the changes. Before scaling down the containers go and check what you have done in **https://<DNS-A-RECORD-FOR-DOCKER-VM>/**
+
 ### in Kubernetes environment
+
+After you have certificates for k8s-vm too (you can use same local folder as before if docker https configuration was successful) make sure you have access to your kubernetes cluster.
+
+NOTE: No concatenation needed here. We want the 3 files that [ZeroSSL](https://zerossl.com/) gave us.
+
+Make a secret and apply the https ingress controller we have in .yaml file in [k8s folder](k8s)(Edit file changing host to your own dns name):
+```bash
+kubectl create secret generic tls-secret \
+--from-file=tls.crt=certificate.crt --from-file=tls.key=private.key \
+--from-file=ca.crt=ca_bundle.crt
+
+kubectl apply -f django/django-https-ingress.yaml
+```
+
+Go and check what you have done in **https://<DNS-A-RECORD-FOR-DOCKER-VM>/**
 
 # Extra things for exploration
 * [Using Visual Studio Code with WSL](https://code.visualstudio.com/docs/remote/wsl)
