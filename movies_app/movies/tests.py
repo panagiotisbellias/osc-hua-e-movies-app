@@ -43,17 +43,6 @@ class AuthenticationTests(TestCase):
         print(f"Login Test: Check")
         self.assertIsNotNone(user)
         
-    # Manager Requesting Registration
-    def test_reqister_requesting(self):
-        username = self.newManagerRequest()
-        print(f"Test 1.2.1: New Manager Request for user with username '{username}' created")
-        self.assertEquals(ManagerRequest.objects.get(is_manager=True).username, 'manager_test')
-        print(f"Test 1.2.2: New Manager Request for user with username '{username}' has been delivered")
-
-    # Approve Request
-    def test_request_approving(self):
-        pass
-
     # Manager Registration
     def test_register_manager(self):
        User.objects.create(
