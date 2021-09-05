@@ -31,7 +31,7 @@ pipeline {
                 '''
             }
         }
-
+/*
         stage('Ansible Deployment') {
 
             environment {
@@ -77,7 +77,7 @@ pipeline {
                 }
             }
         }
-
+*/
         stage('Preparing k8s Deployment') {
 
             environment {
