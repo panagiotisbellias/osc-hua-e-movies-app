@@ -45,10 +45,7 @@ class ManagerSignUpView(generic.CreateView):
 
 def home(request):
     if request.user.is_authenticated:
-        if request.user.is_superuser:
-            return redirect('admin_choose')
-        else:
-            return redirect('index')
+        return redirect('index')
     return render(request, 'movies/home.html')
 
 @login_required
