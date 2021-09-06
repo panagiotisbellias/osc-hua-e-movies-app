@@ -49,6 +49,7 @@ pipeline {
                     -e PSQL_PASSWD=$DB_PASS \
                     -e PSQL_DB=$DB_NAME
 
+                    chmod 777 files/shell_scripts/django_manage.sh
                     ansible-playbook -l gcloud_ansible playbooks/django-install.yml \
                     -e SECRET_KEY='$SECRET_KEY' \
                     -e DATABASE_URL=$DB_URL \
