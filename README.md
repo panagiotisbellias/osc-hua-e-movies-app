@@ -74,8 +74,10 @@ Go to Dashboard / Manage Jenkins / Configure System / Shell / Shell Executable a
 
 #### Step 3: Add the credentials needed
 
-* [Add SSH keys & SSH Agent plugin](https://plugins.jenkins.io/ssh-agent/) with id 'ssh-ansible-vm' to access ansible-vm, and 'ssh-docker-vm' to access docker-vm
-* [Add Secret Texts](https://www.jenkins.io/doc/book/using/using-credentials/) for every environmental variable we need to define in our projects during deployment, like below
+* [Add SSH keys & SSH Agent plugin](https://plugins.jenkins.io/ssh-agent/) with id 'ssh-ansible-vm' to access 
+ansible-vm, and 'ssh-docker-vm' to access docker-vm
+* [Add Secret Texts](https://www.jenkins.io/doc/book/using/using-credentials/) for every environmental variable we 
+need to define in our projects during deployment, like below
 
 ```nano
 # ID                What is the value?
@@ -90,7 +92,8 @@ docker-hosts        the domain name for your docker vm
 docker-image        the docker image as it is named in Dockerhub (e.g. belpanos/django-movies)
 docker-user         your username for Dockerhub
 docker-pass         your password for Dockerhub
-k8s-db-url          postgresql://<db-user-name>:<db-user-password>@pg-cluster-ip/<db-name> # NO QUOTES TO AVOID PROBLEMS
+k8s-db-url          postgresql://<db-user-name>:<db-user-password>@pg-cluster-ip/<db-name> # NO QUOTES TO AVOID 
+PROBLEMS
 k8s-hosts           the domain name for your k8s vm
 ```
 
@@ -105,24 +108,31 @@ In the django job the pipeline will be the [Jenkinsfile](Jenkinsfile)
 ##### Build stage
 Takes the code from the git repository
 ##### Test stage
-Activates a virtual environment, installs the requirements, copies the .env.example to use it as .env with some demo values for testing and executes the tests.py file so the application can be tested before goes on production.
+Activates a virtual environment, installs the requirements, copies the .env.example to use it as .env with some 
+demo values for testing and executes the tests.py file so the application can be tested before goes on production.
 NOTE: connect to your jenkins vm and do the below line so the test stage can run
 ```bash
 <username>@<vm-name>:~$ sudo apt-get install libpcap-dev libpq-dev
 ```
 ##### Ansible Deployment
-Ansible connects to the ansible-vm through ssh agent and the ssh key we define there and runs a playbook for postgres database configuration and django site configuration passing the sensitive parameters from secret texts.
+Ansible connects to the ansible-vm through ssh agent and the ssh key we define there and runs a playbook for 
+postgres database configuration and django site configuration passing the sensitive parameters from secret texts.
 
 ##### Docker Deployment
-Ansible connects to the docker-vm through ssh and runs a playbook that it will define the sensitive parameters and will use docker-compose module to do docker-compose up the containers according to [docker-compose.yml](docker-compose.yml)
+Ansible connects to the docker-vm through ssh and runs a playbook that it will define the sensitive parameters and 
+will use docker-compose module to do docker-compose up the containers according to [docker-compose.yml](docker-compose.yml)
 
 ##### Preparing k8s Deployment
 Here, to deploy our app we need a docker image updated. So we build the image according to [nonroot.Dockerfile](nonroot.Dockerfile), we are logging in Dockerhub and push the image there to be public available.
 
 ##### Kubernetes Deployment
-After we have [configure connection](https://github.com/panagiotisbellias/e-movies-app#connect-kubernetes-cluster-with-local-pc-orand-jenkins-server) between jenkins user and our k8s cluster, we update secrets and configmaps using also some Ansible to populate ~/.env values and create all the needed entities such as persistent volume claims, deployments, cluster IPs, ingress, services.
+After we have [configure connection](https://github.com/panagiotisbellias/e-movies-app#connect-kubernetes-cluster-with-local-pc-orand-jenkins-server) 
+between jenkins user and our k8s cluster, we update secrets and configmaps using also some Ansible to populate ~/.
+env values and create all the needed entities such as persistent volume claims, deployments, cluster IPs, ingress, 
+services.
 
-Secrets and ConfigMaps could be just prepared from earlier. This is applied to the https ingress, we will see later in [SSL configuration](https://github.com/panagiotisbellias/e-movies-app#in-kubernetes-environment)
+Secrets and ConfigMaps could be just prepared from earlier. This is applied to the https ingress, we will see 
+later in [SSL configuration](https://github.com/panagiotisbellias/e-movies-app#in-kubernetes-environment)
 
 ### Deployment with pure Ansible
 In order to be able to use Ansible for automation, there is the [ansible-movie-project](https://github.com/panagiotisbellias/ansible-movie-code.git). There is installation and usage guide.
@@ -130,7 +140,14 @@ In order to be able to use Ansible for automation, there is the [ansible-movie-p
 * [More Details](https://github.com/panagiotisbellias/ansible-movie-code#pure-ansible)
 
 ### Deployment with Docker and docker-compose using Ansible
-In order to deploy our project in Docker environment, we use again the [ansible-movie-project](https://github.com/panagiotisbellias/ansible-movie-code.git) where we use a playbook that uses an Ansible role to run the application with docker-compose according to the [docker-compose.yml](docker-compose.yml). In that file, we have defined three services, the postgres container with its volume in order to be able to store data, the django container for our app taking environmental variables from local .env file (it's ready when we run the playbook from jenkins-server where the sensitive values from environmental variables are parametric). The django container is built according to the [nonroot.Dockerfile](nonroot.Dockerfile) as a nonroot process for safety reasons. Also, the nginx container is defined to start so as to have a web server in front of django container and to be able to pass SSL certificates for HTTPS environment. For the HTTPS part we will talk about [later](https://github.com/panagiotisbellias/e-movies-app#in-docker-environment).
+In order to deploy our project in Docker environment, we use again the [ansible-movie-project](https://github.com/panagiotisbellias/ansible-movie-code.git) where we use a playbook that uses an Ansible role to run the application 
+with docker-compose according to the [docker-compose.yml](docker-compose.yml). In that file, we have defined three 
+services, the postgres container with its volume in order to be able to store data, the django container for our 
+app taking environmental variables from local .env file (it's ready when we run the playbook from jenkins-server 
+where the sensitive values from environmental variables are parametric). The django container is built according 
+to the [nonroot.Dockerfile](nonroot.Dockerfile) as a nonroot process for safety reasons. Also, the nginx container 
+is defined to start so as to have a web server in front of django container and to be able to pass SSL 
+certificates for HTTPS environment. For the HTTPS part we will talk about [later](https://github.com/panagiotisbellias/e-movies-app#in-docker-environment).
 
 * [More Info Here](https://github.com/panagiotisbellias/ansible-movie-code#ansible--docker)
 
@@ -163,7 +180,8 @@ cat kube-config
 mkdir ~/.kube
 scp <vm-name>:/home/<vm-username>/kube-config ~/.kube/config
 ```
-Edit ~/.kube/config to replace the 127.0.0.1 with the VM's public ip and the certificate line in clusters section with the below line (not used this way in a real production environment)
+Edit ~/.kube/config to replace the 127.0.0.1 with the VM's public ip and the certificate line in clusters section 
+with the below line (not used this way in a real production environment)
 ```bash
 insecure-skip-tls-verify: true
 ```
@@ -175,7 +193,8 @@ kubectl get pods
 ```
 you can ensure that the connection is established.
 
-If you use CI/CD tool and mostly Jenkins do the following (for better deployment fork the repository to be able to change code where needed):
+If you use CI/CD tool and mostly Jenkins do the following (for better deployment fork the repository to be able to 
+change code where needed):
 ```bash
 # Jenkins terminal
 sudo su
@@ -198,9 +217,12 @@ kubectl get pods
 you can ensure that the connection is established.
 
 #### Kubernetes Entities
-Either manually or via jenkins server using Jenkinsfile and secret texts the following will do the trick! The code is located in [k8s](k8s) folder. (The .yaml files)
+Either manually or via jenkins server using Jenkinsfile and secret texts the following will do the trick! The code 
+is located in [k8s](k8s) folder. (The .yaml files)
 
-* Don't forget to have a docker image in DockerHub with the project because the deployment entity for django uses it. You can follow the logic located in Jenkinsfile in the 'Preparing k8s Deployment' stage. You must have docker installed in your local machine (or jenkins server)
+* Don't forget to have a docker image in DockerHub with the project because the deployment entity for django uses 
+it. You can follow the logic located in Jenkinsfile in the 'Preparing k8s Deployment' stage. You must have docker 
+installed in your local machine (or jenkins server)
 
 * [Docker Image](https://hub.docker.com/repository/docker/belpanos/django-movies)
 
@@ -238,24 +260,29 @@ python manage.py createsuperuser # and answer the prompts in case you want to ha
 exit # or press ctrl-D to exit container's bash
 ```
 
-To change to the correct values the .env file we use some Ansible running [this playbook](https://github.com/panagiotisbellias/ansible-movie-code/blob/main/playbooks/django-populate-env.yml). This is also used by Jenkins server and Jenkinsfile. See more [here](https://github.com/panagiotisbellias/ansible-movie-code#kubernetes-deployment-usage)
+To change to the correct values the .env file we use some Ansible running [this playbook](https://github.com/panagiotisbellias/ansible-movie-code/blob/main/playbooks/django-populate-env.yml). This is also used by Jenkins 
+server and Jenkinsfile. See more [here](https://github.com/panagiotisbellias/ansible-movie-code#kubernetes-deployment-usage)
 
 ## Creating Domain Names
 * [Go here](https://www.cloudns.net/) to make a free account.
 
 ### DNS Zone
-* [Go here](https://www.cloudns.net/wiki/article/29/) to make a DNS zone with a general name and a fixed ending. Each VM later will have one more word in front of the DNS zone as you will see.
+* [Go here](https://www.cloudns.net/wiki/article/29/) to make a DNS zone with a general name and a fixed ending. 
+Each VM later will have one more word in front of the DNS zone as you will see.
 
 ### A and CNAME records
 * [Make A records](https://www.cloudns.net/wiki/article/10/) for your VMs.
 
-* [Make CNAME records](https://www.cloudns.net/wiki/article/13/) when you will need to verify your domain names at the SSL installation.
+* [Make CNAME records](https://www.cloudns.net/wiki/article/13/) when you will need to verify your domain names at 
+the SSL installation.
 
 ## Installing SSL Certificates
 
-* [Take SSL certificates from here](https://zerossl.com/) for each VM you have, making an account or more when free certificates are over. (Usually 3 certificates per account)
+* [Take SSL certificates from here](https://zerossl.com/) for each VM you have, making an account or more when 
+free certificates are over. (Usually 3 certificates per account)
 
-Make Account / New Certificate / Enter your domain name (A record) / 90-Day Certificate / Verify Domain / DNS (CNAME)
+Make Account / New Certificate / Enter your domain name (A record) / 90-Day Certificate / Verify Domain / DNS 
+(CNAME)
 
 Now, follow the steps and add the CNAME record the instructions tell you. When done press 'verify domain'.
 
@@ -265,9 +292,12 @@ Choose Server Format: NGINX / Install Certificate / Download .zip file
 
 ### in Jenkins VM
 
-Let's assume that we have done the wanted concatenation and now we have the certificate.crt and the private.key files. These files should be moved in the cloned [ansible-movie-code](https://github.com/panagiotisbellias/ansible-movie-code.git) project under the path 'files/certs/jenkins' inside that folder. In case you have repo duplicated and push code the .gitignore protects these files from become visible.
+Let's assume that we have done the wanted concatenation and now we have the certificate.crt and the private.key 
+files. These files should be moved in the cloned [ansible-movie-code](https://github.com/panagiotisbellias/ansible-movie-code.git) project under the path 'files/certs/jenkins' inside that folder. In case you have repo 
+duplicated and push code the .gitignore protects these files from become visible.
 
-So now we run from our local PC (where we have already set ssh connection between Ansible and Jenkins) the related playbook.
+So now we run from our local PC (where we have already set ssh connection between Ansible and Jenkins) the related 
+playbook.
 ```bash
 ansible-playbook -l <group-name with jenkins-vm> playbooks/jenkins-config.yml
 ```
@@ -299,7 +329,8 @@ Here we need to do the work manually. So,
 
 ### Step 3: Pass certificates in project's folder
 
-* Save locally the certificate in the 'assets/nginx/certs' folder and do the concatenation if it hasn't been done already.
+* Save locally the certificate in the 'assets/nginx/certs' folder and do the concatenation if it hasn't been done 
+already.
 * Copy them in the VM going in 'assets/nginx/certs' folder and using scp like below:
 ```bash
 scp certificate.crt docker-vm:/home/<username>/e-movies-app/assets/nginx/certs/server.crt
@@ -313,11 +344,13 @@ scp private.key docker-vm:/home/azureuser/e-movies-app/assets/nginx/certs/server
 docker-compose up --build
 docker-compose down
 ```
-to apply the changes. Before scaling down the containers go and check what you have done in https:// followed by your A record
+to apply the changes. Before scaling down the containers go and check what you have done in https:// followed by 
+your A record
 
 ### in Kubernetes environment
 
-After you have certificates for k8s-vm too (you can use same local folder as before if docker https configuration was successful) make sure you have access to your kubernetes cluster.
+After you have certificates for k8s-vm too (you can use same local folder as before if docker https configuration 
+was successful) make sure you have access to your kubernetes cluster.
 
 NOTE: No concatenation needed here. We want the 3 files that [ZeroSSL](https://zerossl.com/) gave us.
 
