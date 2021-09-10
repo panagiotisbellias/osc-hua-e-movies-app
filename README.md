@@ -18,7 +18,8 @@ DATABASE_URL=sqlite:///./db.sqlite3
 ALLOWED_HOSTS=localhost
 ```
 
-If you want to run it with PostgreSQL Database visit the [link](https://www.youtube.com/watch?v=RAFZleZYxsc) and change DATABASE_URL above as:
+If you want to run it with PostgreSQL Database visit the [link](https://www.youtube.com/watch?v=RAFZleZYxsc) and 
+change DATABASE_URL above as:
 ```vim
 DATABASE_URL=postgresql://<DB-USERNAME>:<DB-PASSWORD>@localhost/<DB-NAME>
 ``` 
@@ -43,7 +44,8 @@ gunicorn --bind 0.0.0.0:8000 movies_app.wsgi:application
 
 ## Deploy django project to a VM (Virtual Machine)
 
-We are going to need 4 VMs. One for the jenkins server and one for each execution environment (ansible, docker and kubernetes)
+We are going to need 4 VMs. One for the jenkins server and one for each execution environment (ansible, docker and 
+kubernetes)
 
 * [Create VM in Gcloud](https://cloud.google.com/compute/docs/instances/create-start-instance)
 * [Create VM in Azure Portal](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-portal)
@@ -133,7 +135,8 @@ In order to deploy our project in Docker environment, we use again the [ansible-
 * [More Info Here](https://github.com/panagiotisbellias/ansible-movie-code#ansible--docker)
 
 ### Deployment using Kubernetes and a few things from Ansible
-In order to deploy our project in Kubernetes cluster, we first need to connect to that VM so as to configure a better connection between local PC or jenkins server and deployment vm's:
+In order to deploy our project in Kubernetes cluster, we first need to connect to that VM so as to configure a 
+better connection between local PC or jenkins server and deployment vm's:
 
 * [installing microk8s](https://ubuntu.com/tutorials/install-a-local-kubernetes-with-microk8s#2-deploying-microk8s)
 * Do this trick to write less in terminal
