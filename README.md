@@ -75,7 +75,7 @@ Go to Dashboard / Manage Jenkins / Configure System / Shell / Shell Executable a
 * [Add SSH keys & SSH Agent plugin](https://plugins.jenkins.io/ssh-agent/) with id 'ssh-ansible-vm' to access ansible-vm, and 'ssh-docker-vm' to access docker-vm
 * [Add Secret Texts](https://www.jenkins.io/doc/book/using/using-credentials/) for every environmental variable we need to define in our projects during deployment, like below
 
-```vim
+```nano
 # ID                What is the value?
 psql-user           a username you choose for the db user
 psql-pass           a password you choose for the db user
@@ -125,12 +125,12 @@ Secrets and ConfigMaps could be just prepared from earlier. This is applied to t
 ### Deployment with pure Ansible
 In order to be able to use Ansible for automation, there is the [ansible-movie-project](https://github.com/panagiotisbellias/ansible-movie-code.git). There is installation and usage guide.
 
-* [More Details](https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md)
+* [More Details](https://github.com/panagiotisbellias/ansible-movie-code#pure-ansible)
 
 ### Deployment with Docker and docker-compose using Ansible
 In order to deploy our project in Docker environment, we use again the [ansible-movie-project](https://github.com/panagiotisbellias/ansible-movie-code.git) where we use a playbook that uses an Ansible role to run the application with docker-compose according to the [docker-compose.yml](docker-compose.yml). In that file, we have defined three services, the postgres container with its volume in order to be able to store data, the django container for our app taking environmental variables from local .env file (it's ready when we run the playbook from jenkins-server where the sensitive values from environmental variables are parametric). The django container is built according to the [nonroot.Dockerfile](nonroot.Dockerfile) as a nonroot process for safety reasons. Also, the nginx container is defined to start so as to have a web server in front of django container and to be able to pass SSL certificates for HTTPS environment. For the HTTPS part we will talk about [later](https://github.com/panagiotisbellias/e-movies-app#in-docker-environment).
 
-* [More Info Here](https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md)
+* [More Info Here](https://github.com/panagiotisbellias/ansible-movie-code#ansible--docker)
 
 ### Deployment using Kubernetes and a few things from Ansible
 In order to deploy our project in Kubernetes cluster, we first need to connect to that VM so as to configure a better connection between local PC or jenkins server and deployment vm's:
@@ -235,6 +235,8 @@ python manage.py createsuperuser # and answer the prompts in case you want to ha
 exit # or press ctrl-D to exit container's bash
 ```
 
+To change to the correct values the .env file we use some Ansible running [this playbook](https://github.com/panagiotisbellias/ansible-movie-code/blob/main/playbooks/django-populate-env.yml). This is also used by Jenkins server and Jenkinsfile. See more [here](https://github.com/panagiotisbellias/ansible-movie-code#kubernetes-deployment-usage)
+
 ## Creating Domain Names
 * [Go here](https://www.cloudns.net/) to make a free account.
 
@@ -334,5 +336,6 @@ Go and check what you have done in https:// followed by your A record
 * [Install Docker](https://dev.to/semirteskeredzic/docker-docker-compose-on-ubuntu-20-04-server-4h3k)
 * [k9s tool - handle kubernetes clusters](https://github.com/derailed/k9s)
 * [Static files in Kubernetes - whitenoise](http://whitenoise.evans.io/en/stable/)
+* [SSL Configuration with Ansible](https://github.com/panagiotisbellias/ansible-movie-code#ssl-configuration-using-playbooks)
 
 ## It's our pleasure to contact us at our social media or at github [issues](https://github.com/panagiotisbellias/e-movies-app/issues)
