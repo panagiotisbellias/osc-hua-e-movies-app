@@ -216,7 +216,7 @@ kubectl get pods
 ```
 you can ensure that the connection is established.
 
-#### Kubernetes Entities
+### Kubernetes Entities
 
 Find instructions [here](https://docs.google.com/document/d/1k6Evhb-exS7WoEJLVttFEdrooXi0j45jJ0h6HR88qRc/edit?usp=sharing)
 
