@@ -217,51 +217,8 @@ kubectl get pods
 you can ensure that the connection is established.
 
 #### Kubernetes Entities
-Either manually or via jenkins server using Jenkinsfile and secret texts the following will do the trick! The code 
-is located in [k8s](k8s) folder. (The .yaml files)
 
-* Don't forget to have a docker image in DockerHub with the project because the deployment entity for django uses 
-it. You can follow the logic located in Jenkinsfile in the 'Preparing k8s Deployment' stage. You must have docker 
-installed in your local machine (or jenkins server)
-
-* [Docker Image](https://hub.docker.com/repository/docker/belpanos/django-movies)
-
-```bash
-# Persistent Volume Claim
-kubectl apply -f db/postgres-pvc.yaml
-
-# Secret (for the postgresql database)
-kubectl create secret generic pg-user \
---from-literal=PGUSER=<put user name here> \
---from-literal=PGPASSWORD=<put password here>
-
-# Config Map (for .env variables)
-vim movies_app/movies_app/.env # change to the correct values
-kubectl create configmap django-config --from-env-file=movies_app/movies_app/.env
-
-# Deployments
-kubectl apply -f db/postgres-deployment.yaml
-kubectl apply -f django/django-deployment.yaml
-
-# Services (Cluster IPs)
-kubectl apply -f db/postgres-clip.yaml
-kubectl apply -f django/django-clip.yaml
-
-# Ingress (For just HTTP - Edit file changing host to your own dns name)
-kubectl apply -f django/django-ingress.yaml
-
-# For possible errors with init-containers & migrations do this
-kubectl get pods # to see the full name of django pod (e.g. django-r4nd0m-str1n0)
-kubectl exec -it <pod name> bash # to apply migrations manually inside pod
-
-# Now inside the container's bash shell
-python manage.py makemigrations && python manage.py migrate ## to migrate database
-python manage.py createsuperuser # and answer the prompts in case you want to have an admin present
-exit # or press ctrl-D to exit container's bash
-```
-
-To change to the correct values the .env file we use some Ansible running [this playbook](https://github.com/panagiotisbellias/ansible-movie-code/blob/main/playbooks/django-populate-env.yml). This is also used by Jenkins 
-server and Jenkinsfile. See more [here](https://github.com/panagiotisbellias/ansible-movie-code#kubernetes-deployment-usage)
+Find instructions [here](https://docs.google.com/document/d/1k6Evhb-exS7WoEJLVttFEdrooXi0j45jJ0h6HR88qRc/edit?usp=sharing)
 
 ## Creating Domain Names
 * [Go here](https://www.cloudns.net/) to make a free account.
