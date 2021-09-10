@@ -39,6 +39,8 @@ python manage.py runserver
 gunicorn --bind 0.0.0.0:8000 movies_app.wsgi:application
 ```
 
+[See what you have done](http://127.0.0.1:8000/)
+
 ## Deploy django project to a VM (Virtual Machine)
 
 We are going to need 4 VMs. One for the jenkins server and one for each execution environment (ansible, docker and kubernetes)
