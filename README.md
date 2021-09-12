@@ -291,7 +291,7 @@ already.
 * Copy them in the VM going in 'assets/nginx/certs' folder and using scp like below:
 ```bash
 scp certificate.crt docker-vm:/home/<username>/e-movies-app/assets/nginx/certs/server.crt
-scp private.key docker-vm:/home/azureuser/e-movies-app/assets/nginx/certs/server.key
+scp private.key docker-vm:/home/<username>/e-movies-app/assets/nginx/certs/server.key
 ```
 
 #### Step 4: Run docker-compose
