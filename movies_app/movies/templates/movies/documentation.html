@@ -4,258 +4,233 @@
     <h1><b>App Documentation</b></h1>
     <p><b>Information</p></b>
     <p>E-Movies App, a Django project in the context of HUA DIT course 'Basic DevOps Concepts and Tools'</p>
-    <h2 id="run-project-locally">Run project locally</h2>
-    <h3 id="clone-and-initialize-project">Clone and initialize project</h3>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">git</span> clone https://github.com/panagiotisbellias/e-movies-app 
-    <span class="kw">python3</span> -m venv myvenv
-    <span class="kw">source</span> myvenv/bin/activate
-    <span class="kw">pip</span> install -r requirements.txt
-    <span class="kw">cd</span> movies_app
-    <span class="kw">cp</span> movies_app/.env.example movies_app/.env</code></pre>
-    <p>Edit movies_app/.env file to define</p>
-    <pre class="vim"><code>SECRET_KEY=&#39;test123&#39;
-    DATABASE_URL=sqlite:///./db.sqlite3
-    ALLOWED_HOSTS=localhost</code></pre>
-    <p>If you want to run it with PostgreSQL Database visit the <a href="https://www.youtube.com/watch?v=RAFZleZYxsc">link</a> and change DATABASE_URL above as:</p>
-    <pre class="vim"><code>DATABASE_URL=postgresql://&lt;DB-USERNAME&gt;:&lt;DB-PASSWORD&gt;@localhost/&lt;DB-NAME&gt;</code></pre>
-    <p>after you have created a database using <a href="https://www.youtube.com/watch?v=1wvDVBjNDys">pgAdmin</a></p>
-    <h3 id="database-migration">Database migration</h3>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> manage.py makemigrations <span class="kw">&amp;&amp;</span> <span class="kw">python</span> manage.py migrate</code></pre>
-    <h3 id="run-development-server">Run development server</h3>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> manage.py runserver</code></pre>
-    <h3 id="alternatively-run-gunicorn-application-server">Alternatively, run gunicorn application server</h3>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">gunicorn</span> --bind 0.0.0.0:8000 movies_app.wsgi:application</code></pre>
-    <h2 id="deploy-django-project-to-a-vm-virtual-machine">Deploy django project to a VM (Virtual Machine)</h2>
-    <p>We are going to need 4 VMs. One for the jenkins server and one for each execution environment (ansible, docker and kubernetes)</p>
-    <ul>
-    <li><a href="https://cloud.google.com/compute/docs/instances/create-start-instance">Create VM in Gcloud</a></li>
-    <li><a href="https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-portal">Create VM in Azure Portal</a></li>
-    <li><a href="https://help.skytap.com/connect-to-a-linux-vm-with-ssh.html">SSH Access to VMs</a></li>
-    <li><a href="https://linuxize.com/post/using-the-ssh-config-file/">SSH Automation</a></li>
-    <li><a href="https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address">Reserve Static IP in Gcloud</a></li>
-    <li><a href="https://azure.microsoft.com/en-au/resources/videos/azure-friday-how-to-reserve-a-public-ip-range-in-azure-using-public-ip-prefix/">Reserve Static IP in Azure</a></li>
-    </ul>
-    <h3 id="cicd-tool-configuration-jenkins-server">CI/CD tool configuration (Jenkins Server)</h3>
-    <ul>
-    <li><a href="https://www.jenkins.io/doc/book/installing/linux/">Install Jenkins</a></li>
-    </ul>
-    <p>Make sure service is running</p>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sudo</span> systemctl status jenkins
-    <span class="kw">netstat</span> -anlp <span class="kw">|</span> <span class="kw">grep</span> 8080 <span class="co"># needs package net-tools</span></code></pre>
-    <h4 id="step-1-configure-shell">Step 1: Configure Shell</h4>
-    <p>Go to Dashboard / Manage Jenkins / Configure System / Shell / Shell Executable and type '/bin/bash'</p>
-    <h4 id="step-2-add-webhooks-both-to-django-and-ansible-repositories">Step 2: Add webhooks both to django and ansible repositories</h4>
-    <p><a href="https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/duplicating-a-repository">Dublicate</a> repositories for easier configuration.</p>
-    <ul>
-    <li><a href="https://www.blazemeter.com/blog/how-to-integrate-your-github-repository-to-your-jenkins-project">Add Webhooks - see until Step 4</a></li>
-    </ul>
-    <h4 id="step-3-add-the-credentials-needed">Step 3: Add the credentials needed</h4>
-    <ul>
-    <li><a href="https://plugins.jenkins.io/ssh-agent/">Add SSH keys &amp; SSH Agent plugin</a> with id 'ssh-ansible-vm' to access ansible-vm, and 'ssh-docker-vm' to access docker-vm</li>
-    <li><a href="https://www.jenkins.io/doc/book/using/using-credentials/">Add Secret Texts</a> for every environmental variable we need to define in our projects during deployment, like below</li>
-    </ul>
-    <pre class="vim"><code># ID                What is the value?
-    psql-user           a username you choose for the db user
-    psql-pass           a password you choose for the db user
-    psql-db             a name you choose for your database - must be aligned with the db-urls below
-    django-key          the django secret key - can be a random string
-    ansible-db-url      &#39;postgresql://&lt;db-user-name&gt;:&lt;db-user-password&gt;@localhost/&lt;db-name&gt;&#39;
-    ansible-hosts       the domain name for your ansible vm
-    docker-db-url       &#39;postgresql://&lt;db-user-name&gt;:&lt;db-user-password&gt;@db/&lt;db-name&gt;&#39;
-    docker-hosts        the domain name for your docker vm
-    docker-image        the docker image as it is named in Dockerhub (e.g. belpanos/django-movies)
-    docker-user         your username for Dockerhub
-    docker-pass         your password for Dockerhub
-    k8s-db-url          postgresql://&lt;db-user-name&gt;:&lt;db-user-password&gt;@pg-cluster-ip/&lt;db-name&gt; # NO QUOTES TO AVOID PROBLEMS
-    k8s-hosts           the domain name for your k8s vm</code></pre>
-    <h4 id="create-jobs">Create Jobs</h4>
-    <ul>
-    <li><a href="https://www.guru99.com/create-builds-jenkins-freestyle-project.html">Create Freestyle project for Ansible code</a></li>
-    <li><a href="https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md">More for Ansible</a></li>
-    <li><a href="https://www.jenkins.io/doc/pipeline/tour/hello-world/">Create Pipeline project</a></li>
-    <li><a href="https://www.blazemeter.com/blog/how-to-integrate-your-github-repository-to-your-jenkins-project">Add Webhooks to both jobs - see until Step 9</a></li>
-    </ul>
-    <p>In the django job the pipeline will be the <a href="Jenkinsfile">Jenkinsfile</a></p>
-    <h5 id="build-stage">Build stage</h5>
-    <p>Takes the code from the git repository ##### Test stage Activates a virtual environment, installs the requirements, copies the .env.example to use it as .env with some demo values for testing and executes the tests.py file so the application can be tested before goes on production. NOTE: connect to your jenkins vm and do the below line so the test stage can run</p>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">&lt;username&gt;</span>@<span class="kw">&lt;</span>vm-name<span class="kw">&gt;</span>:~$ sudo apt-get install libpcap-dev libpq-dev</code></pre>
-    <h5 id="ansible-deployment">Ansible Deployment</h5>
-    <p>Ansible connects to the ansible-vm through ssh agent and the ssh key we define there and runs a playbook for postgres database configuration and django site configuration passing the sensitive parameters from secret texts.</p>
-    <h5 id="docker-deployment">Docker Deployment</h5>
-    <p>Ansible connects to the docker-vm through ssh and runs a playbook that it will define the sensitive parameters and will use docker-compose module to do docker-compose up the containers according to <a href="docker-compose.yml">docker-compose.yml</a></p>
-    <h5 id="preparing-k8s-deployment">Preparing k8s Deployment</h5>
-    <p>Here, to deploy our app we need a docker image updated. So we build the image according to <a href="nonroot.Dockerfile">nonroot.Dockerfile</a>, we are logging in Dockerhub and push the image there to be public available.</p>
-    <h5 id="kubernetes-deployment">Kubernetes Deployment</h5>
-    <p>After we have <a href="https://github.com/panagiotisbellias/e-movies-app#connect-kubernetes-cluster-with-local-pc-orand-jenkins-server">configure connection</a> between jenkins user and our k8s cluster, we update secrets and configmaps using also some Ansible to populate ~/.env values and create all the needed entities such as persistent volume claims, deployments, cluster IPs, ingress, services.</p>
-    <p>Secrets and ConfigMaps could be just prepared from earlier. This is applied to the https ingress, we will see later in <a href="https://github.com/panagiotisbellias/e-movies-app#in-kubernetes-environment">SSL configuration</a></p>
-    <h3 id="deployment-with-pure-ansible">Deployment with pure Ansible</h3>
-    <p>In order to be able to use Ansible for automation, there is the <a href="https://github.com/panagiotisbellias/ansible-movie-code.git">ansible-movie-project</a>. There is installation and usage guide.</p>
-    <ul>
-    <li><a href="https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md">More Details</a></li>
-    </ul>
-    <h3 id="deployment-with-docker-and-docker-compose-using-ansible">Deployment with Docker and docker-compose using Ansible</h3>
-    <p>In order to deploy our project in Docker environment, we use again the <a href="https://github.com/panagiotisbellias/ansible-movie-code.git">ansible-movie-project</a> where we use a playbook that uses an Ansible role to run the application with docker-compose according to the <a href="docker-compose.yml">docker-compose.yml</a>. In that file, we have defined three services, the postgres container with its volume in order to be able to store data, the django container for our app taking environmental variables from local .env file (it's ready when we run the playbook from jenkins-server where the sensitive values from environmental variables are parametric). The django container is built according to the <a href="nonroot.Dockerfile">nonroot.Dockerfile</a> as a nonroot process for safety reasons. Also, the nginx container is defined to start so as to have a web server in front of django container and to be able to pass SSL certificates for HTTPS environment. For the HTTPS part we will talk about <a href="https://github.com/panagiotisbellias/e-movies-app#in-docker-environment">later</a>.</p>
-    <ul>
-    <li><a href="https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md">More Info Here</a></li>
-    </ul>
-    <h3 id="deployment-using-kubernetes-and-a-few-things-from-ansible">Deployment using Kubernetes and a few things from Ansible</h3>
-    <p>In order to deploy our project in Kubernetes cluster, we first need to connect to that VM so as to configure a better connection between local PC or jenkins server and deployment vm's:</p>
-    <ul>
-    <li><a href="https://ubuntu.com/tutorials/install-a-local-kubernetes-with-microk8s#2-deploying-microk8s">installing microk8s</a></li>
-    <li><p>Do this trick to write less in terminal</p>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">echo</span> <span class="st">&quot;alias k=&#39;microk8s.kubectl&#39; &quot;</span> <span class="kw">&gt;&gt;</span> ~/.profile</code></pre>
-    <p>The permanent alias will be applied only if you reconnect to your VM.</p></li>
-    </ul>
-    <h4 id="cluster-configuration-enable-addons">Cluster Configuration &amp; Enable Addons</h4>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sudo</span> usermod -a -G microk8s <span class="kw">&lt;</span>your-username<span class="kw">&gt;</span>
-    <span class="kw">sudo</span> chown -f -R <span class="kw">&lt;</span>your-username<span class="kw">&gt;</span> ~/.kube
-    <span class="kw">microk8s</span> enable dns dashboard storage ingress
-    <span class="kw">microk8s</span> status</code></pre>
-    <h4 id="connect-kubernetes-cluster-with-local-pc-orand-jenkins-server">Connect Kubernetes Cluster with Local PC or/and Jenkins server</h4>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="co"># VM&#39;s terminal</span>
-    <span class="kw">k</span> config view --raw <span class="kw">&gt;</span> kube-config
-    <span class="kw">cat</span> kube-config
-    
-    <span class="co"># Local terminal</span>
-    <span class="kw">mkdir</span> ~/.kube
-    <span class="kw">scp</span> <span class="kw">&lt;</span>vm-name<span class="kw">&gt;</span>:/home/<span class="kw">&lt;</span>vm-username<span class="kw">&gt;</span>/kube-config ~/.kube/config</code></pre>
-    <p>Edit ~/.kube/config to replace the 127.0.0.1 with the VM's public ip and the certificate line in clusters section with the below line (not used this way in a real production environment)</p>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">insecure-skip-tls-verify</span>: true</code></pre>
-    <ul>
-    <li><p>Don't forget to add a firewall rule for the port specified in the ~/.kube/config file With</p>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">kubectl</span> get pods</code></pre>
-    <p>you can ensure that the connection is established.</p></li>
-    </ul>
-    <p>If you use CI/CD tool and mostly Jenkins do the following (for better deployment fork the repository to be able to change code where needed):</p>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="co"># Jenkins terminal</span>
-    <span class="kw">sudo</span> su
-    <span class="kw">curl</span> -LO <span class="st">&quot;https://dl.k8s.io/release/</span><span class="ot">$(</span><span class="kw">curl</span> -L -s https://dl.k8s.io/release/stable.txt<span class="ot">)</span><span class="st">/bin/linux/amd64/kubectl&quot;</span>
-    <span class="kw">sudo</span> install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-    <span class="kw">su</span> jenkins
-    <span class="kw">cd</span>
-    
-    <span class="co"># Local terminal</span>
-    <span class="kw">scp</span> ~/.kube/config <span class="kw">&lt;</span>jenkins-vm-name<span class="kw">&gt;</span>:/tmp/config
-    
-    <span class="co"># Jenkins terminal</span>
-    <span class="kw">mkdir</span> -p .kube
-    <span class="kw">cp</span> /tmp/config ~/.kube/</code></pre>
-    <p>With</p>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">kubectl</span> get pods</code></pre>
-    <p>you can ensure that the connection is established.</p>
-    <h4 id="kubernetes-entities">Kubernetes Entities</h4>
-    <p>Either manually or via jenkins server using Jenkinsfile and secret texts the following will do the trick! The code is located in <a href="k8s">k8s</a> folder. (The .yaml files)</p>
-    <ul>
-    <li><p>Don't forget to have a docker image in DockerHub with the project because the deployment entity for django uses it. You can follow the logic located in Jenkinsfile in the 'Preparing k8s Deployment' stage. You must have docker installed in your local machine (or jenkins server)</p></li>
-    <li><p><a href="https://hub.docker.com/repository/docker/belpanos/django-movies">Docker Image</a></p></li>
-    </ul>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="co"># Persistent Volume Claim</span>
-    <span class="kw">kubectl</span> apply -f db/postgres-pvc.yaml
-    
-    <span class="co"># Secret (for the postgresql database)</span>
-    <span class="kw">kubectl</span> create secret generic pg-user \
-    <span class="kw">--from-literal</span>=PGUSER=<span class="kw">&lt;</span>put user name here<span class="kw">&gt;</span> \
-    <span class="kw">--from-literal</span>=PGPASSWORD=<span class="kw">&lt;</span>put password here<span class="kw">&gt;</span>
-    
-    <span class="co"># Config Map (for .env variables)</span>
-    <span class="kw">vim</span> movies_app/movies_app/.env <span class="co"># change to the correct values</span>
-    <span class="kw">kubectl</span> create configmap django-config --from-env-file=movies_app/movies_app/.env
-    
-    <span class="co"># Deployments</span>
-    <span class="kw">kubectl</span> apply -f db/postgres-deployment.yaml
-    <span class="kw">kubectl</span> apply -f django/django-deployment.yaml
-    
-    <span class="co"># Services (Cluster IPs)</span>
-    <span class="kw">kubectl</span> apply -f db/postgres-clip.yaml
-    <span class="kw">kubectl</span> apply -f django/django-clip.yaml
-    
-    <span class="co"># Ingress (For just HTTP - Edit file changing host to your own dns name)</span>
-    <span class="kw">kubectl</span> apply -f django/django-ingress.yaml
-    
-    <span class="co"># For possible errors with init-containers &amp; migrations do this</span>
-    <span class="kw">kubectl</span> get pods <span class="co"># to see the full name of django pod (e.g. django-r4nd0m-str1n0)</span>
-    <span class="kw">kubectl</span> exec -it <span class="kw">&lt;</span>pod name<span class="kw">&gt;</span> bash <span class="co"># to apply migrations manually inside pod</span>
-    
-    <span class="co"># Now inside the container&#39;s bash shell</span>
-    <span class="kw">python</span> manage.py makemigrations <span class="kw">&amp;&amp;</span> <span class="kw">python</span> manage.py migrate <span class="co">## to migrate database</span>
-    <span class="kw">python</span> manage.py createsuperuser <span class="co"># and answer the prompts in case you want to have an admin present</span>
-    <span class="kw">exit</span> <span class="co"># or press ctrl-D to exit container&#39;s bash</span></code></pre>
-    <h2 id="creating-domain-names">Creating Domain Names</h2>
-    <ul>
-    <li><a href="https://www.cloudns.net/">Go here</a> to make a free account.</li>
-    </ul>
-    <h3 id="dns-zone">DNS Zone</h3>
-    <ul>
-    <li><a href="https://www.cloudns.net/wiki/article/29/">Go here</a> to make a DNS zone with a general name and a fixed ending. Each VM later will have one more word in front of the DNS zone as you will see.</li>
-    </ul>
-    <h3 id="a-and-cname-records">A and CNAME records</h3>
-    <ul>
-    <li><p><a href="https://www.cloudns.net/wiki/article/10/">Make A records</a> for your VMs.</p></li>
-    <li><p><a href="https://www.cloudns.net/wiki/article/13/">Make CNAME records</a> when you will need to verify your domain names at the SSL installation.</p></li>
-    </ul>
-    <h2 id="installing-ssl-certificates">Installing SSL Certificates</h2>
-    <ul>
-    <li><a href="https://zerossl.com/">Take SSL certificates from here</a> for each VM you have, making an account or more when free certificates are over. (Usually 3 certificates per account)</li>
-    </ul>
-    <p>Make Account / New Certificate / Enter your domain name (A record) / 90-Day Certificate / Verify Domain / DNS (CNAME)</p>
-    <p>Now, follow the steps and add the CNAME record the instructions tell you. When done press 'verify domain'.</p>
-    <p>Choose Server Format: NGINX / Install Certificate / Download .zip file</p>
-    <p><a href="https://help.zerossl.com/hc/en-us/articles/360058295894-Installing-SSL-Certificate-on-NGINX">General Installation Instructions</a> which are described better below for each execution environment.</p>
-    <h3 id="in-jenkins-vm">in Jenkins VM</h3>
-    <p>Let's assume that we have done the wanted concatenation and now we have the certificate.crt and the private.key files. These files should be moved in the cloned <a href="https://github.com/panagiotisbellias/ansible-movie-code.git">ansible-movie-code</a> project under the path 'files/certs/jenkins' inside that folder. In case you have repo duplicated and push code the .gitignore protects these files from become visible.</p>
-    <p>So now we run from our local PC (where we have already set ssh connection between Ansible and Jenkins) the related playbook.</p>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">ansible-playbook</span> -l <span class="kw">&lt;</span>group-name with jenkins-vm<span class="kw">&gt;</span> playbooks/jenkins-config.yml</code></pre>
-    <h3 id="in-pure-ansible-environment">in pure Ansible environment</h3>
-    <p>Now we want the certificate files for ansible-vm to be located under 'files/certs/django' inside that folder. So we can run the related playbook.</p>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">ansible-playbook</span> -l <span class="kw">&lt;</span>group-name with ansible-vm<span class="kw">&gt;</span> playbooks/ansible-https.yml</code></pre>
-    <h3 id="in-docker-environment">in Docker environment</h3>
-    <p>Here we need to do the work manually. So,</p>
-    <h4 id="step-1-connect-to-vm-and-install-docker">Step 1: Connect to VM and install docker</h4>
-    <ul>
-    <li>Connect to docker-vm via SSH.</li>
-    <li>Install Docker and docker-compose if they aren't already installed.</li>
-    </ul>
-    <h4 id="step-2-configure-django-project-and-its-files">Step 2: Configure Django project and it's files</h4>
-    <ul>
-    <li>Clone the django project and go inside the root folder.</li>
-    <li>Edit the docker-compose.yml and uncomment commented lines.</li>
-    <li>Copy the .env.example to .env</li>
-    <li>Make directory 'certs' under 'assets/nginx' both locally and in VM.</li>
-    <li>Edit 'assets/nginx/nginx.http.config' &amp; uncomment 1st, 3rd and 4th commented line.</li>
-    </ul>
-    <h3 id="step-3-pass-certificates-in-projects-folder">Step 3: Pass certificates in project's folder</h3>
-    <ul>
-    <li>Save locally the certificate in the 'assets/nginx/certs' folder and do the concatenation if it hasn't been done already.</li>
-    <li><p>Copy them in the VM going in 'assets/nginx/certs' folder and using scp like below:</p>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">scp</span> certificate.crt docker-vm:/home/<span class="kw">&lt;</span>username<span class="kw">&gt;</span>/e-movies-app/assets/nginx/certs/server.crt
-    <span class="kw">scp</span> private.key docker-vm:/home/azureuser/e-movies-app/assets/nginx/certs/server.key</code></pre></li>
-    </ul>
-    <h3 id="step-4-run-docker-compose">Step 4: Run docker-compose</h3>
-    <ul>
-    <li><p>Run</p>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">docker-compose</span> up --build
-    <span class="kw">docker-compose</span> down</code></pre>
-    <p>to apply the changes. Before scaling down the containers go and check what you have done in https:// followed by your A record</p></li>
-    </ul>
-    <h3 id="in-kubernetes-environment">in Kubernetes environment</h3>
-    <p>After you have certificates for k8s-vm too (you can use same local folder as before if docker https configuration was successful) make sure you have access to your kubernetes cluster.</p>
-    <p>NOTE: No concatenation needed here. We want the 3 files that <a href="https://zerossl.com/">ZeroSSL</a> gave us.</p>
-    <p>Make a secret and apply the https ingress controller we have in .yaml file in <a href="k8s">k8s folder</a> (Edit <a href="k8s/django/django-https-ingress.yaml">file</a> changing host to your own dns name):</p>
-    <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">kubectl</span> create secret generic tls-secret \
-    <span class="kw">--from-file</span>=tls.crt=certificate.crt \
-    <span class="kw">--from-file</span>=tls.key=private.key \
-    <span class="kw">--from-file</span>=ca.crt=ca_bundle.crt
-    
-    <span class="kw">cd</span> k8s
-    <span class="kw">kubectl</span> apply -f django/django-https-ingress.yaml</code></pre>
-    <p>Go and check what you have done in https:// followed by your A record</p>
-    <h1 id="extra-things-for-exploration">Extra things for exploration</h1>
-    <ul>
-    <li><a href="https://code.visualstudio.com/docs/remote/wsl">Using Visual Studio Code with WSL</a></li>
-    <li><a href="https://dev.to/semirteskeredzic/docker-docker-compose-on-ubuntu-20-04-server-4h3k">Install Docker</a></li>
-    <li><a href="https://github.com/derailed/k9s">k9s tool - handle kubernetes clusters</a></li>
-    <li><a href="http://whitenoise.evans.io/en/stable/">Static files in Kubernetes - whitenoise</a></li>
-    </ul>
-    <h2 id="its-our-pleasure-to-contact-us-at-our-social-media-or-at-github-issues">It's our pleasure to contact us at our social media or at github <a href="https://github.com/panagiotisbellias/e-movies-app/issues">issues</a></h2>
-    
+
+<h3 align="left">
+Languages and Tools:
+</h3>
+<p align="left"> 
+<a href="https://azure.microsoft.com/en-in/" target="_blank"> <img src="https://www.vectorlogo.zone/logos/microsoft_azure/microsoft_azure-icon.svg" alt="azure" width="40" height="40"/> </a> <a href="https://www.gnu.org/software/bash/" target="_blank"> <img src="https://www.vectorlogo.zone/logos/gnu_bash/gnu_bash-icon.svg" alt="bash" width="40" height="40"/> </a> <a href="https://getbootstrap.com" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/bootstrap/bootstrap-plain-wordmark.svg" alt="bootstrap" width="40" height="40"/> </a> <a href="https://www.w3schools.com/css/" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original-wordmark.svg" alt="css3" width="40" height="40"/> </a> <a href="https://www.djangoproject.com/" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/django/django-original.svg" alt="django" width="40" height="40"/> </a> <a href="https://www.docker.com/" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original-wordmark.svg" alt="docker" width="40" height="40"/> </a> <a href="https://cloud.google.com" target="_blank"> <img src="https://www.vectorlogo.zone/logos/google_cloud/google_cloud-icon.svg" alt="gcp" width="40" height="40"/> </a> <a href="https://git-scm.com/" target="_blank"> <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="40" height="40"/> </a> <a href="https://www.w3.org/html/" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg" alt="html5" width="40" height="40"/> </a> <a href="https://www.jenkins.io" target="_blank"> <img src="https://www.vectorlogo.zone/logos/jenkins/jenkins-icon.svg" alt="jenkins" width="40" height="40"/> </a> <a href="https://kubernetes.io" target="_blank"> <img src="https://www.vectorlogo.zone/logos/kubernetes/kubernetes-icon.svg" alt="kubernetes" width="40" height="40"/> </a> <a href="https://www.linux.org/" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/linux/linux-original.svg" alt="linux" width="40" height="40"/> </a> <a href="https://www.nginx.com" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nginx/nginx-original.svg" alt="nginx" width="40" height="40"/> </a> <a href="https://www.postgresql.org" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original-wordmark.svg" alt="postgresql" width="40" height="40"/> </a> <a href="https://www.python.org" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="40" height="40"/> </a> <a href="https://www.sqlite.org/" target="_blank"> <img src="https://www.vectorlogo.zone/logos/sqlite/sqlite-icon.svg" alt="sqlite" width="40" height="40"/> </a>
+</p>
+
+<h2 id="run-project-locally">Run project locally</h2>
+<h3 id="clone-and-initialize-project">Clone and initialize project</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">git</span> clone https://github.com/panagiotisbellias/e-movies-app 
+<span class="kw">python3</span> -m venv myvenv
+<span class="kw">source</span> myvenv/bin/activate
+<span class="kw">pip</span> install -r requirements.txt
+<span class="kw">cd</span> movies_app
+<span class="kw">cp</span> movies_app/.env.example movies_app/.env</code></pre>
+<p>Edit movies_app/.env file to define</p>
+<pre class="vim"><code>SECRET_KEY=&#39;test123&#39;
+DATABASE_URL=sqlite:///./db.sqlite3
+ALLOWED_HOSTS=localhost</code></pre>
+<p>If you want to run it with PostgreSQL Database visit the <a href="https://www.youtube.com/watch?v=RAFZleZYxsc">link</a> and change DATABASE_URL above as:</p>
+<pre class="vim"><code>DATABASE_URL=postgresql://&lt;DB-USERNAME&gt;:&lt;DB-PASSWORD&gt;@localhost/&lt;DB-NAME&gt;</code></pre>
+<p>after you have created a database using <a href="https://www.youtube.com/watch?v=1wvDVBjNDys">pgAdmin</a></p>
+<h3 id="database-migration">Database migration</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> manage.py makemigrations <span class="kw">&amp;&amp;</span> <span class="kw">python</span> manage.py migrate</code></pre>
+<h3 id="run-development-server">Run development server</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">python</span> manage.py runserver</code></pre>
+<h3 id="alternatively-run-gunicorn-application-server">Alternatively, run gunicorn application server</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">gunicorn</span> --bind 0.0.0.0:8000 movies_app.wsgi:application</code></pre>
+<p><a href="http://127.0.0.1:8000/">See what you have done</a></p>
+<h2 id="deploy-django-project-to-a-vm-virtual-machine">Deploy django project to a VM (Virtual Machine)</h2>
+<p>We are going to need 4 VMs. One for the jenkins server and one for each execution environment (ansible, docker and kubernetes)</p>
+<ul>
+<li><a href="https://cloud.google.com/compute/docs/instances/create-start-instance">Create VM in Gcloud</a></li>
+<li><a href="https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-portal">Create VM in Azure Portal</a></li>
+<li><a href="https://help.skytap.com/connect-to-a-linux-vm-with-ssh.html">SSH Access to VMs</a></li>
+<li><a href="https://linuxize.com/post/using-the-ssh-config-file/">SSH Automation</a></li>
+<li><a href="https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address">Reserve Static IP in Gcloud</a></li>
+<li><a href="https://azure.microsoft.com/en-au/resources/videos/azure-friday-how-to-reserve-a-public-ip-range-in-azure-using-public-ip-prefix/">Reserve Static IP in Azure</a></li>
+</ul>
+<h3 id="cicd-tool-configuration-jenkins-server">CI/CD tool configuration (Jenkins Server)</h3>
+<ul>
+<li><a href="https://www.jenkins.io/doc/book/installing/linux/">Install Jenkins</a></li>
+</ul>
+<p>Make sure service is running</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sudo</span> systemctl status jenkins
+<span class="kw">netstat</span> -anlp <span class="kw">|</span> <span class="kw">grep</span> 8080 <span class="co"># needs package net-tools</span></code></pre>
+<h4 id="step-1-configure-shell">Step 1: Configure Shell</h4>
+<p>Go to Dashboard / Manage Jenkins / Configure System / Shell / Shell Executable and type '/bin/bash'</p>
+<h4 id="step-2-add-webhooks-both-to-django-and-ansible-repositories">Step 2: Add webhooks both to django and ansible repositories</h4>
+<p><a href="https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/duplicating-a-repository">Dublicate</a> repositories for easier configuration.</p>
+<ul>
+<li><a href="https://www.blazemeter.com/blog/how-to-integrate-your-github-repository-to-your-jenkins-project">Add Webhooks - see until Step 4</a></li>
+</ul>
+<h4 id="step-3-add-the-credentials-needed">Step 3: Add the credentials needed</h4>
+<ul>
+<li><a href="https://plugins.jenkins.io/ssh-agent/">Add SSH keys &amp; SSH Agent plugin</a> with id 'ssh-ansible-vm' to access ansible-vm, and 'ssh-docker-vm' to access docker-vm</li>
+<li><a href="https://www.jenkins.io/doc/book/using/using-credentials/">Add Secret Texts</a> for every environmental variable we need to define in our projects during deployment, like below</li>
+</ul>
+<pre class="nano"><code># ID                What is the value?
+psql-user           a username you choose for the db user
+psql-pass           a password you choose for the db user
+psql-db             a name you choose for your database - must be aligned with the db-urls below
+django-key          the django secret key - can be a random string
+ansible-db-url      &#39;postgresql://&lt;db-user-name&gt;:&lt;db-user-password&gt;@localhost/&lt;db-name&gt;&#39;
+ansible-hosts       the domain name for your ansible vm
+docker-db-url       &#39;postgresql://&lt;db-user-name&gt;:&lt;db-user-password&gt;@db/&lt;db-name&gt;&#39;
+docker-hosts        the domain name for your docker vm
+docker-image        the docker image as it is named in Dockerhub (e.g. belpanos/django-movies)
+docker-user         your username for Dockerhub
+docker-pass         your password for Dockerhub
+k8s-db-url          postgresql://&lt;db-user-name&gt;:&lt;db-user-password&gt;@pg-cluster-ip/&lt;db-name&gt; # NO QUOTES TO AVOID 
+PROBLEMS
+k8s-hosts           the domain name for your k8s vm</code></pre>
+<h4 id="create-jobs">Create Jobs</h4>
+<ul>
+<li><a href="https://www.guru99.com/create-builds-jenkins-freestyle-project.html">Create Freestyle project for Ansible code</a></li>
+<li><a href="https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md">More for Ansible</a></li>
+<li><a href="https://www.jenkins.io/doc/pipeline/tour/hello-world/">Create Pipeline project</a></li>
+<li><a href="https://www.blazemeter.com/blog/how-to-integrate-your-github-repository-to-your-jenkins-project">Add Webhooks to both jobs - see until Step 9</a></li>
+</ul>
+<p>In the django job the pipeline will be the <a href="Jenkinsfile">Jenkinsfile</a></p>
+<h5 id="build-stage">Build stage</h5>
+<p>Takes the code from the git repository ##### Test stage Activates a virtual environment, installs the requirements, copies the .env.example to use it as .env with some demo values for testing and executes the tests.py file so the application can be tested before goes on production. NOTE: connect to your jenkins vm and do the below line so the test stage can run</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">&lt;username&gt;</span>@<span class="kw">&lt;</span>vm-name<span class="kw">&gt;</span>:~$ sudo apt-get install libpcap-dev libpq-dev</code></pre>
+<h5 id="ansible-deployment">Ansible Deployment</h5>
+<p>Ansible connects to the ansible-vm through ssh agent and the ssh key we define there and runs a playbook for postgres database configuration and django site configuration passing the sensitive parameters from secret texts.</p>
+<h5 id="docker-deployment">Docker Deployment</h5>
+<p>Ansible connects to the docker-vm through ssh and runs a playbook that it will define the sensitive parameters and will use docker-compose module to do docker-compose up the containers according to <a href="docker-compose.yml">docker-compose.yml</a></p>
+<h5 id="preparing-k8s-deployment">Preparing k8s Deployment</h5>
+<p>Here, to deploy our app we need a docker image updated. So we build the image according to <a href="nonroot.Dockerfile">nonroot.Dockerfile</a>, we are logging in Dockerhub and push the image there to be public available.</p>
+<h5 id="kubernetes-deployment">Kubernetes Deployment</h5>
+<p>After we have <a href="https://github.com/panagiotisbellias/e-movies-app#connect-kubernetes-cluster-with-local-pc-orand-jenkins-server">configure connection</a> between jenkins user and our k8s cluster, we update secrets and configmaps using also some Ansible to populate ~/. env values and create all the needed entities such as persistent volume claims, deployments, cluster IPs, ingress, services.</p>
+<p>Secrets and ConfigMaps could be just prepared from earlier. This is applied to the https ingress, we will see later in <a href="https://github.com/panagiotisbellias/e-movies-app#in-kubernetes-environment">SSL configuration</a></p>
+<h3 id="deployment-with-pure-ansible">Deployment with pure Ansible</h3>
+<p>In order to be able to use Ansible for automation, there is the <a href="https://github.com/panagiotisbellias/ansible-movie-code.git">ansible-movie-project</a>. There is installation and usage guide.</p>
+<ul>
+<li><a href="https://github.com/panagiotisbellias/ansible-movie-code#pure-ansible">More Details</a></li>
+</ul>
+<h3 id="deployment-with-docker-and-docker-compose-using-ansible">Deployment with Docker and docker-compose using Ansible</h3>
+<p>In order to deploy our project in Docker environment, we use again the <a href="https://github.com/panagiotisbellias/ansible-movie-code.git">ansible-movie-project</a> where we use a playbook that uses an Ansible role to run the application with docker-compose according to the <a href="docker-compose.yml">docker-compose.yml</a>. In that file, we have defined three services, the postgres container with its volume in order to be able to store data, the django container for our app taking environmental variables from local .env file (it's ready when we run the playbook from jenkins-server where the sensitive values from environmental variables are parametric). The django container is built according to the <a href="nonroot.Dockerfile">nonroot.Dockerfile</a> as a nonroot process for safety reasons. Also, the nginx container is defined to start so as to have a web server in front of django container and to be able to pass SSL certificates for HTTPS environment. For the HTTPS part we will talk about <a href="https://github.com/panagiotisbellias/e-movies-app#in-docker-environment">later</a>.</p>
+<ul>
+<li><a href="https://github.com/panagiotisbellias/ansible-movie-code#ansible--docker">More Info Here</a></li>
+</ul>
+<h3 id="deployment-using-kubernetes-and-a-few-things-from-ansible">Deployment using Kubernetes and a few things from Ansible</h3>
+<p>In order to deploy our project in Kubernetes cluster, we first need to connect to that VM so as to configure a better connection between local PC or jenkins server and deployment vm's:</p>
+<ul>
+<li><a href="https://ubuntu.com/tutorials/install-a-local-kubernetes-with-microk8s#2-deploying-microk8s">installing microk8s</a></li>
+<li><p>Do this trick to write less in terminal</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">echo</span> <span class="st">&quot;alias k=&#39;microk8s.kubectl&#39; &quot;</span> <span class="kw">&gt;&gt;</span> ~/.profile</code></pre>
+<p>The permanent alias will be applied only if you reconnect to your VM.</p></li>
+</ul>
+<h4 id="cluster-configuration-enable-addons">Cluster Configuration &amp; Enable Addons</h4>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sudo</span> usermod -a -G microk8s <span class="kw">&lt;</span>your-username<span class="kw">&gt;</span>
+<span class="kw">sudo</span> chown -f -R <span class="kw">&lt;</span>your-username<span class="kw">&gt;</span> ~/.kube
+<span class="kw">microk8s</span> enable dns dashboard storage ingress
+<span class="kw">microk8s</span> status</code></pre>
+<h4 id="connect-kubernetes-cluster-with-local-pc-orand-jenkins-server">Connect Kubernetes Cluster with Local PC or/and Jenkins server</h4>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="co"># VM&#39;s terminal</span>
+<span class="kw">k</span> config view --raw <span class="kw">&gt;</span> kube-config
+<span class="kw">cat</span> kube-config
+
+<span class="co"># Local terminal</span>
+<span class="kw">mkdir</span> ~/.kube
+<span class="kw">scp</span> <span class="kw">&lt;</span>vm-name<span class="kw">&gt;</span>:/home/<span class="kw">&lt;</span>vm-username<span class="kw">&gt;</span>/kube-config ~/.kube/config</code></pre>
+<p>Edit ~/.kube/config to replace the 127.0.0.1 with the VM's public ip and the certificate line in clusters section with the below line (not used this way in a real production environment)</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">insecure-skip-tls-verify</span>: true</code></pre>
+<ul>
+<li><p>Don't forget to add a firewall rule for the port specified in the ~/.kube/config file With</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">kubectl</span> get pods</code></pre>
+<p>you can ensure that the connection is established.</p></li>
+</ul>
+<p>If you use CI/CD tool and mostly Jenkins do the following (for better deployment fork the repository to be able to change code where needed):</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="co"># Jenkins terminal</span>
+<span class="kw">sudo</span> su
+<span class="kw">curl</span> -LO <span class="st">&quot;https://dl.k8s.io/release/</span><span class="ot">$(</span><span class="kw">curl</span> -L -s https://dl.k8s.io/release/stable.txt<span class="ot">)</span><span class="st">/bin/linux/amd64/kubectl&quot;</span>
+<span class="kw">sudo</span> install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+<span class="kw">su</span> jenkins
+<span class="kw">cd</span>
+
+<span class="co"># Local terminal</span>
+<span class="kw">scp</span> ~/.kube/config <span class="kw">&lt;</span>jenkins-vm-name<span class="kw">&gt;</span>:/tmp/config
+
+<span class="co"># Jenkins terminal</span>
+<span class="kw">mkdir</span> -p .kube
+<span class="kw">cp</span> /tmp/config ~/.kube/</code></pre>
+<p>With</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">kubectl</span> get pods</code></pre>
+<p>you can ensure that the connection is established.</p>
+<h3 id="kubernetes-entities">Kubernetes Entities</h3>
+<p>Find instructions <a href="https://docs.google.com/document/d/1k6Evhb-exS7WoEJLVttFEdrooXi0j45jJ0h6HR88qRc/edit?usp=sharing">here</a></p>
+<h2 id="creating-domain-names">Creating Domain Names</h2>
+<ul>
+<li><a href="https://www.cloudns.net/">Go here</a> to make a free account.</li>
+</ul>
+<h3 id="dns-zone">DNS Zone</h3>
+<ul>
+<li><a href="https://www.cloudns.net/wiki/article/29/">Go here</a> to make a DNS zone with a general name and a fixed ending. Each VM later will have one more word in front of the DNS zone as you will see.</li>
+</ul>
+<h3 id="a-and-cname-records">A and CNAME records</h3>
+<ul>
+<li><p><a href="https://www.cloudns.net/wiki/article/10/">Make A records</a> for your VMs.</p></li>
+<li><p><a href="https://www.cloudns.net/wiki/article/13/">Make CNAME records</a> when you will need to verify your domain names at the SSL installation.</p></li>
+</ul>
+<h2 id="installing-ssl-certificates">Installing SSL Certificates</h2>
+<ul>
+<li><a href="https://zerossl.com/">Take SSL certificates from here</a> for each VM you have, making an account or more when free certificates are over. (Usually 3 certificates per account)</li>
+</ul>
+<p>Make Account / New Certificate / Enter your domain name (A record) / 90-Day Certificate / Verify Domain / DNS (CNAME)</p>
+<p>Now, follow the steps and add the CNAME record the instructions tell you. When done press 'verify domain'.</p>
+<p>Choose Server Format: NGINX / Install Certificate / Download .zip file</p>
+<p><a href="https://help.zerossl.com/hc/en-us/articles/360058295894-Installing-SSL-Certificate-on-NGINX">General Installation Instructions</a> which are described better below for each execution environment.</p>
+<h3 id="in-jenkins-vm">in Jenkins VM</h3>
+<p>Let's assume that we have done the wanted concatenation and now we have the certificate.crt and the private.key files. These files should be moved in the cloned <a href="https://github.com/panagiotisbellias/ansible-movie-code.git">ansible-movie-code</a> project under the path 'files/certs/jenkins' inside that folder. In case you have repo duplicated and push code the .gitignore protects these files from become visible.</p>
+<p>So now we run from our local PC (where we have already set ssh connection between Ansible and Jenkins) the related playbook.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">ansible-playbook</span> -l <span class="kw">&lt;</span>group-name with jenkins-vm<span class="kw">&gt;</span> playbooks/jenkins-config.yml</code></pre>
+<h3 id="in-pure-ansible-environment">in pure Ansible environment</h3>
+<p>Now we want the certificate files for ansible-vm to be located under 'files/certs/django' inside that folder. So we can run the related playbook.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">ansible-playbook</span> -l <span class="kw">&lt;</span>group-name with ansible-vm<span class="kw">&gt;</span> playbooks/ansible-https.yml</code></pre>
+<h3 id="in-docker-environment">in Docker environment</h3>
+<p>Here we need to do the work manually. So,</p>
+<h4 id="step-1-connect-to-vm-and-install-docker">Step 1: Connect to VM and install docker</h4>
+<ul>
+<li>Connect to docker-vm via SSH.</li>
+<li>Install Docker and docker-compose if they aren't already installed.</li>
+</ul>
+<h4 id="step-2-configure-django-project-and-its-files">Step 2: Configure Django project and it's files</h4>
+<ul>
+<li>Clone the django project and go inside the root folder.</li>
+<li>Edit the <a href="docker-compose.yml">docker-compose.yml</a> and uncomment commented lines.</li>
+<li>Copy the .env.example to .env</li>
+<li>Make directory 'certs' under 'assets/nginx' both locally and in VM.</li>
+<li>Edit 'assets/nginx/nginx.http.config' &amp; uncomment 1st, 3rd and 4th commented line.</li>
+</ul>
+<h4 id="step-3-pass-certificates-in-projects-folder">Step 3: Pass certificates in project's folder</h4>
+<ul>
+<li>Save locally the certificate in the 'assets/nginx/certs' folder and do the concatenation if it hasn't been done already.</li>
+<li><p>Copy them in the VM going in 'assets/nginx/certs' folder and using scp like below:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">scp</span> certificate.crt docker-vm:/home/<span class="kw">&lt;</span>username<span class="kw">&gt;</span>/e-movies-app/assets/nginx/certs/server.crt
+<span class="kw">scp</span> private.key docker-vm:/home/<span class="kw">&lt;</span>username<span class="kw">&gt;</span>/e-movies-app/assets/nginx/certs/server.key</code></pre></li>
+</ul>
+<h4 id="step-4-run-docker-compose">Step 4: Run docker-compose</h4>
+<ul>
+<li><p>Run</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">docker-compose</span> up --build
+<span class="kw">docker-compose</span> down</code></pre>
+<p>to apply the changes. Before scaling down the containers go and check what you have done in https:// followed by your A record</p></li>
+</ul>
+<h3 id="in-kubernetes-environment">in Kubernetes environment</h3>
+<p>After you have certificates for k8s-vm too (you can use same local folder as before if docker https configuration was successful) make sure you have access to your kubernetes cluster.</p>
+<p>NOTE: No concatenation needed here. We want the 3 files that <a href="https://zerossl.com/">ZeroSSL</a> gave us.</p>
+<p>Make a secret and apply the https ingress controller we have in .yaml file in <a href="k8s">k8s folder</a> (Edit <a href="k8s/django/django-https-ingress.yaml">file</a> changing host to your own dns name):</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">kubectl</span> create secret generic tls-secret \
+<span class="kw">--from-file</span>=tls.crt=certificate.crt \
+<span class="kw">--from-file</span>=tls.key=private.key \
+<span class="kw">--from-file</span>=ca.crt=ca_bundle.crt
+
+<span class="kw">cd</span> k8s
+<span class="kw">kubectl</span> apply -f django/django-https-ingress.yaml</code></pre>
+<p>Go and check what you have done in https:// followed by your A record</p>
+<h1 id="extra-things-for-exploration">Extra things for exploration</h1>
+<ul>
+<li><a href="https://code.visualstudio.com/docs/remote/wsl">Using Visual Studio Code with WSL</a></li>
+<li><a href="https://dev.to/semirteskeredzic/docker-docker-compose-on-ubuntu-20-04-server-4h3k">Install Docker</a></li>
+<li><a href="https://github.com/derailed/k9s">k9s tool - handle kubernetes clusters</a></li>
+<li><a href="http://whitenoise.evans.io/en/stable/">Static files in Kubernetes - whitenoise</a></li>
+<li><a href="https://github.com/panagiotisbellias/ansible-movie-code#ssl-configuration-using-playbooks">SSL Configuration with Ansible</a></li>
+</ul>
+<h2 id="its-our-pleasure-to-contact-us-at-our-social-media-or-at-github-issues">It's our pleasure to contact us at our social media or at github <a href="https://github.com/panagiotisbellias/e-movies-app/issues">issues</a></h2>
 {% endblock %}
