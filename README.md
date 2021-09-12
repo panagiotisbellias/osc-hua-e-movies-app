@@ -284,7 +284,7 @@ Here we need to do the work manually. So,
 * Make directory 'certs' under 'assets/nginx' both locally and in VM.
 * Edit 'assets/nginx/nginx.http.config' & uncomment 1st, 3rd and 4th commented line.
 
-### Step 3: Pass certificates in project's folder
+#### Step 3: Pass certificates in project's folder
 
 * Save locally the certificate in the 'assets/nginx/certs' folder and do the concatenation if it hasn't been done 
 already.
@@ -294,7 +294,7 @@ scp certificate.crt docker-vm:/home/<username>/e-movies-app/assets/nginx/certs/s
 scp private.key docker-vm:/home/azureuser/e-movies-app/assets/nginx/certs/server.key
 ```
 
-### Step 4: Run docker-compose
+#### Step 4: Run docker-compose
 
 * Run
 ```bash
