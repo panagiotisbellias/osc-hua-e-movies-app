@@ -1,6 +1,8 @@
 # e-movies-app
 E-Movies App, a Django project in the context of HUA DIT course 'Basic DevOps Concepts and Tools'
 
+(https://img.shields.io/badge/python-v3.8.5-blue)
+
 ## Run project locally
 ### Clone and initialize project
 ```bash
