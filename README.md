@@ -279,7 +279,7 @@ Here we need to do the work manually. So,
 #### Step 2: Configure Django project and it's files
 
 * Clone the django project and go inside the root folder.
-* Edit the docker-compose.yml and uncomment commented lines.
+* Edit the [docker-compose.yml](docker-compose.yml) and uncomment commented lines.
 * Copy the .env.example to .env
 * Make directory 'certs' under 'assets/nginx' both locally and in VM.
 * Edit 'assets/nginx/nginx.http.config' & uncomment 1st, 3rd and 4th commented line.
