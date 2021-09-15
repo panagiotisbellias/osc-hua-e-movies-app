@@ -1,3 +1,4 @@
+from json.decoder import JSONDecodeError
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render, redirect
@@ -112,7 +113,13 @@ def suggested(request):
             response = requests.get('https://api.trakt.tv/movies/' + str(i))
         except ConnectionError:
             break
-        result = response.json()
+        try:
+            result = response.json()
+        except JSONDecodeError:
+            response.status_code = 200
+            break
+        if not result:
+            continue
         print(result)
         suggested_movies[i-1] = result
         i+=1

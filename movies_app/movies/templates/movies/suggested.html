@@ -8,22 +8,16 @@
       <tr>
          <th>ID</th>
          <th>Title</th>
-         <th>Director</th>
-         <th>Actors</th>
-         <th>Genre</th>
-         <th>Release Date</th>
-         <th>Rating (0-10)</th>
+         <th>Slug</th>
+         <th>Release Year</th>
          <th>Options</th>
       </tr>
     {% for movie in suggested_movies %}
     <tr>
-            <th>{{ movie.id }}</th>
+            <th>{{ movie.ids.trakt }}</th>
             <th>{{ movie.title }}</th>
-            <th>{{ movie.director }}</th>
-            <th>{{ movie.actors }}</th>
-            <th>{{ movie.genre }}</th>
-            <th>{{ movie.release_date }}</th>
-            <th>{{ movie.rating }}</th>
+            <th>{{ movie.ids.slugs }}</th>
+            <th>{{ movie.year }}</th>
             <th><a href = "/movies/add_auto/{id}">
             Add
             </a></th>
