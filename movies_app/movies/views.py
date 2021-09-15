@@ -105,7 +105,6 @@ def delete(request, movie_id):
 @manager_required
 def suggested(request):
 
-    # https://api.trakt.tv
     suggested_movies = {}
     i=1
     while i <= 100:
