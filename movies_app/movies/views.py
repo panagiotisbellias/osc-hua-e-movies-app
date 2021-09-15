@@ -10,6 +10,8 @@ from .models import Movies, User
 from .decorators import admin_required, viewer_required, manager_required
 from .forms import ViewerSignUpForm, ManagerSignUpForm
 
+import requests
+
 class SignUpView(generic.TemplateView):
     template_name = 'registration/signup.html'
 
@@ -104,8 +106,22 @@ def delete(request, movie_id):
 def suggested(request):
 
     # https://api.trakt.tv
+    suggested_movies = {}
+    i=1
+    while i <= 100:
+        try:
+            response = requests.get('https://api.trakt.tv/movies/' + str(i))
+        except ConnectionError:
+            break
+        result = response.json()
+        print(result)
+        suggested_movies[i-1] = result
+        i+=1
+    if response.status_code != 200:
+        return render(request, '404.html')
+
     # https://developer.imdb.com/?ref=ft_ds 
-    return render(request, '404.html')
+    return render(request, 'movies/suggested.html', {'suggested_movies': suggested_movies})
 
 @login_required
 @admin_required
