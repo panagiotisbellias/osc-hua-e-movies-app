@@ -23,10 +23,11 @@ services:
     image: nginx:latest
     volumes:
       - ./assets/nginx/nginx.http.config:/etc/nginx/nginx.conf
-      #- ./assets/nginx/certs:/etc/nginx/certs
+      - ./assets/nginx/nginx.https.config:/etc/nginx/nginxssl.conf
+      - ./assets/nginx/certs:/etc/nginx/certs
       - static_volume:/app/static
     ports:
-      # - "443:443"
+      - "443:443"
       - "80:80"
     depends_on:
       - django

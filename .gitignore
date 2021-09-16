@@ -134,4 +134,7 @@ dmypy.json
 fix_git.sh
 
 # Docker certificates
-assets/nginx/certs
+assets/nginx/certs/*.crt
+assets/nginx/certs/*.crt:Zone.Identifier
+assets/nginx/certs/*.key
+assets/nginx/certs/*.key:Zone.Identifier
