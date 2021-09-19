@@ -9,6 +9,7 @@
         <link href="https://fonts.googleapis.com/css?family=Clicker+Script" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/header.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}">
         {% if user.is_authenticated and user.is_manager %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/managers.css' %}">
@@ -22,6 +23,7 @@
             <img style="position: absolute; top: 0; right: 0; border: 0;"
             src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
                 alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+            
             <div class="row justify-content-center">
                 <div class="col-md-10 col-sm-12">
                     <div class="row">
@@ -45,6 +47,7 @@
                     {% endif %}
                     </div>
                 </div>
+                
                 <div class="card mb-3">
                     <div class="card-body">
                     {% for message in messages %}
@@ -56,6 +59,26 @@
                         </div>
                     {% endfor %}
                 </div>
+                <header class="site-header">
+                    <div class="wrapper site-header__wrapper">
+                      <div class="site-header__start">
+                        <a href="#" class="brand"><p>The biggest movie library you will ever see!!!</p></a>
+                      </div>
+                      <div class="site-header__end">
+                        <nav class="nav">
+                          <button class="nav__toggle" aria-expanded="false" type="button">
+                            menu
+                          </button>
+                          <ul class="nav__wrapper">
+                            <li class="nav__item btn btn-light" role="button"><a href="{% url 'home' %}">Home</a></li>
+                            <li class="nav__item btn btn-light" role="button"><a href="/about">About</a></li>
+                            <li class="nav__item btn btn-light" role="button"><a href="/movies">Movies</a></li>
+                          </ul>
+                        </nav>
+                        
+                      </div>
+                    </div>
+                  </header>
                 {% block body_block %}
                 {% endblock %}
             </div>
@@ -64,17 +87,29 @@
                     <ul class="ct-footer-list text-center-sm">
                         <li>
                             <h2 class="ct-footer-list-header">
-                                About Site
+                                About
                             </h2>
                             <ul>
                                 <li>
-                                    <a href="https://github.com/panagiotisbellias/e-movies-app/blob/main/README.md">Django README</a>
+                                    <a href="https://github.com/panagiotisbellias/e-movies-app">GitHub repository</a>
                                 </li>
                                 <li>
-                                    <a href="https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md">Ansible README</a>
+                                    <a href="https://pngtree.com/so/film-clipart">Film clipart png from <b>pngtree.com</b></a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'about' %}">App Documentation</a>
+                                </li>
+                                <li><text><b>Panagiotis Bellias</b></text><br>
+                                    <a href="https://www.facebook.com/BelliasPanayiotis">Find me on Facebook</a>
+                                    <a href="https://www.instagram.com/bel_panos/">@bel_panos (Instagram)</a>
+                                </li>
+                                <li><text><b>Pavlos Andreou</b></text><br>
+                                    <a href="https://www.facebook.com/profile.php?id=100008216979261">Find me on Facebook</a>
+                                    <a href="https://www.instagram.com/los_andreou/">@los_andreou (Instagram)</a>
                                 </li>
                             </ul>
                         </li>
+
                         <li>
                             <h2 class="ct-footer-list-header">
                                 The Motive
@@ -103,27 +138,17 @@
                                 </li>
                             </ul>
                         </li>
+                        
                         <li>
                             <h2 class="ct-footer-list-header">
-                                About
+                                About Site
                             </h2>
                             <ul>
                                 <li>
-                                    <a href="https://github.com/panagiotisbellias/e-movies-app">GitHub repository</a>
+                                    <a href="https://github.com/panagiotisbellias/e-movies-app/blob/main/README.md">Django README</a>
                                 </li>
                                 <li>
-                                    <a href="https://pngtree.com/so/film-clipart">Film clipart png from <b>pngtree.com</b></a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'about' %}">App Documentation</a>
-                                </li>
-                                <li>Panagiotis Bellias<br>
-                                    <a href="https://www.facebook.com/BelliasPanayiotis">Find me on Facebook</a>
-                                    <a href="https://www.instagram.com/bel_panos/">@bel_panos (Instagram)</a>
-                                </li>
-                                <li>Pavlos Andreou<br>
-                                    <a href="https://www.facebook.com/profile.php?id=100008216979261">Find me on Facebook</a>
-                                    <a href="https://www.instagram.com/los_andreou/">@los_andreou (Instagram)</a>
+                                    <a href="https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md">Ansible README</a>
                                 </li>
                             </ul>
                         </li>
@@ -136,14 +161,9 @@
                                     Tavros, Athens, 17778<br>
                                 </address>
                             </div>
-                            <!-- 
-                            <div class="col-sm-6 col-md-2 ct-u-paddingTop10">
-                                <a href="" target="_blank"><img alt="google play store" src="images/androidstore.png"></a>
-                            </div> -->
                         </div>
                     </div>
                 </div>
-                
             </footer>
           </div>
         </div>

@@ -1,3 +1,31 @@
+html,
+body,
+img,
+figure {
+    max-width: 100%
+}
+ 
+html,
+body {
+    overflow-x: hidden;
+    color: #000;
+    -ms-overflow-style: scrollbar;
+    -webkit-font-smoothing: antialiased;
+margin:0;
+}
+ 
+a,
+a:hover,
+a:focus,
+a:active {
+    text-decoration: none;
+}
+ 
+a {
+    -webkit-transition: all .25s ease-in-out;
+    transition: all .25s ease-in-out
+}
+ 
 .ct-u-paddingTop10 {
     padding-top: 10px !important
 }
@@ -34,7 +62,7 @@
 .ct-footer-pre span {
     font-family: 'Open Sans Condensed', sans-serif;
     color: #ebebeb;
-    font-size: 30px
+    font-size: 20px
 }
  
 .ct-footer-pre .form-group {
@@ -142,7 +170,6 @@
 @media (max-width:1199px) {
     .ct-footer-list > li {
         display: inline-block;
-        float: left
     }
 }
  
@@ -263,6 +290,85 @@ address a:hover {
     }
 }
  
+.btn.btn-motive {
+    background-color: #21D1B2;
+    -webkit-transition: all .25s ease;
+    transition: all .25s ease;
+}
+ 
+.btn.btn-motive:hover {
+    background-color: #21D1B2;
+}
+ 
+.btn.btn-motive:hover:active {
+    background-color: #21D1B2
+}
+ 
+.btn.btn-violet {
+    color: #fff;
+    background-color: #4f4f99;
+    -webkit-transition: all .25s ease;
+    transition: all .25s ease;
+}
+ 
+.btn.btn-violet:hover {
+    background-color: #37376b;
+}
+ 
+.btn.btn-violet:hover:active {
+    background-color: #2f2f5b
+}
+ 
+.btn.btn-green {
+    color: #fff;
+    background-color: #43670f;
+    -webkit-transition: all .25s ease;
+    transition: all .25s ease;
+}
+ 
+.btn.btn-green:hover {
+    background-color: #36520c;
+}
+ 
+.btn.btn-green:hover:active {
+    background-color: #314a0b
+}
+ 
+.btn.btn-red {
+    color: #fff;
+    background-color: #da2229;
+    -webkit-transition: all .25s ease;
+    transition: all .25s ease;
+}
+ 
+.btn.btn-red:hover {
+    background-color: #ae1b21;
+}
+ 
+.btn.btn-red:hover:active {
+    background-color: #9d181e
+}
+ 
+.btn.btn-white {
+    background-color: #fff;
+    -webkit-transition: all .25s ease;
+    transition: all .25s ease;
+}
+ 
+.btn.btn-white:hover {
+    background-color: #d9d9d9;
+}
+ 
+.btn.btn-white:hover:active {
+    background-color: #c9c9c9
+}
+ 
+.btn.btn-large {
+    padding: 20px 50px;
+    font-size: 30px;
+    white-space: normal;
+}
+ 
 @media (max-width:479px) {
     .btn.btn-large {
         padding: 20px 10px;
@@ -307,7 +413,6 @@ address a:hover {
  
 .ct-section_header--type2 img {
     display: inline-block;
-    float: left;
     position: relative;
     top: 15px;
     padding-right: 3px
@@ -413,4 +518,9 @@ address a:hover {
     .ct-section_header--type4 + p {
         font-size: 28px
     }
+}
+
+text {
+    font-family: 'nimbus-sans-condensed', sans-serif;
+    color: #fff;
 }
