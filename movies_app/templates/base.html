@@ -9,11 +9,13 @@
         <link href="https://fonts.googleapis.com/css?family=Clicker+Script" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/footer.css' %}">
         {% if user.is_authenticated and user.is_manager %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/managers.css' %}">
         {% else %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/viewers.css' %}">
         {% endif %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     </head>
     <body>
         <a href="https://github.com/panagiotisbellias/e-movies-app">
@@ -57,18 +59,91 @@
                 {% block body_block %}
                 {% endblock %}
             </div>
-            <footer>
-              <a href="https://www.hua.gr/index.php/en/">Harokopio University</a>
-              /
-              <a href="https://www.dit.hua.gr/index.php/en/">Department of Informatics and Telematics</a>
-              /
-              <a href="https://github.com/panagiotisbellias/e-movies-app">GitHub repository</a>
-              /
-              <a href="https://pngtree.com/so/film-clipart">Film clipart png from <b>pngtree.com</b></a>
-              /
-              <br><a href="https://github.com/sibtc/django-multiple-user-types-example">Ideas & code taken by vitorfs project</a>
-              /
-              <a href="{% url 'about' %}">App Documentation</a>
+            <footer class="ct-footer">
+                <div class="container">
+                    <ul class="ct-footer-list text-center-sm">
+                        <li>
+                            <h2 class="ct-footer-list-header">
+                                About Site
+                            </h2>
+                            <ul>
+                                <li>
+                                    <a href="https://github.com/panagiotisbellias/e-movies-app/blob/main/README.md">Django README</a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/panagiotisbellias/ansible-movie-code/blob/main/README.md">Ansible README</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h2 class="ct-footer-list-header">
+                                The Motive
+                            </h2>
+                            <ul>
+                                <li>
+                                    <a href="https://www.hua.gr/index.php/en/">Harokopio University</a>
+                                </li>
+                                <li>
+                                    <a href="https://www.dit.hua.gr/index.php/en/">Department Of Informatics and Telematics</a>
+                                </li>
+                                <li>
+                                    <a href="https://www.dit.hua.gr/index.php/en/studies/undergraduate-studies/studies-program/30-undergraduate-studies/courses/1659-basic-devops-concepts-and-tools">Basic DevOps Concepts and Tools course</a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/tsadimas/">Anargyros Tsadimas</a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/tsadimas/django3-sampe-project">Django Sample Project</a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/tsadimas/ansible-example">Ansible Example</a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/sibtc/django-multiple-user-types-example">Ideas & Code</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h2 class="ct-footer-list-header">
+                                About
+                            </h2>
+                            <ul>
+                                <li>
+                                    <a href="https://github.com/panagiotisbellias/e-movies-app">GitHub repository</a>
+                                </li>
+                                <li>
+                                    <a href="https://pngtree.com/so/film-clipart">Film clipart png from <b>pngtree.com</b></a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'about' %}">App Documentation</a>
+                                </li>
+                                <li>Panagiotis Bellias<br>
+                                    <a href="https://www.facebook.com/BelliasPanayiotis">Find me on Facebook</a>
+                                    <a href="https://www.instagram.com/bel_panos/">@bel_panos (Instagram)</a>
+                                </li>
+                                <li>Pavlos Andreou<br>
+                                    <a href="https://www.facebook.com/profile.php?id=100008216979261">Find me on Facebook</a>
+                                    <a href="https://www.instagram.com/los_andreou/">@los_andreou (Instagram)</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="ct-footer-meta text-center-sm">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3">
+                                <address>
+                                    <span>Harokopio University<br></span>9 Omirou Street<br>
+                                    Tavros, Athens, 17778<br>
+                                </address>
+                            </div>
+                            <!-- 
+                            <div class="col-sm-6 col-md-2 ct-u-paddingTop10">
+                                <a href="" target="_blank"><img alt="google play store" src="images/androidstore.png"></a>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+                
             </footer>
           </div>
         </div>
