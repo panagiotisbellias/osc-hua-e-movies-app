@@ -37,7 +37,7 @@ pipeline {
             environment {
                 DB_URL=credentials('ansible-db-url')
                 HOSTS=credentials('ansible-hosts')
-                SECRET_KEY=credentials('django-key-ans')
+                SECRET_KEY=credentials('django-key')
             }
 
             steps {
