@@ -6,7 +6,7 @@ pipeline {
         DB_USER=credentials('psql-user')
         DB_PASS=credentials('psql-pass')
         DB_NAME=credentials('psql-db')
-        SECRET_KEY=credentials('django-key')
+        
     }
 
     stages {
@@ -37,7 +37,8 @@ pipeline {
             environment {
                 DB_URL=credentials('ansible-db-url')
                 HOSTS=credentials('ansible-hosts')
-                SECRET='$SECRET_KEY'
+                SECRET=credentials('django-key')
+                SECRET_KEY='\''$SECRET'\''
             }
 
             steps {
@@ -64,6 +65,7 @@ pipeline {
             environment {
                 DB_URL=credentials('docker-db-url')
                 HOSTS=credentials('docker-hosts')
+                SECRET_KEY=credentials('django-key')
             }
 
             steps {
@@ -105,6 +107,7 @@ pipeline {
             environment {
                 DB_URL=credentials('k8s-db-url')
                 HOSTS=credentials('k8s-hosts')
+                SECRET_KEY=credentials('django-key')
             }
 
             steps {
