@@ -50,7 +50,7 @@ pipeline {
                     -e PSQL_DB=$DB_NAME
 
                     ansible-playbook -l gcloud_ansible playbooks/django-install.yml \
-                    -e SECRET_KEY=$SECRET_KEY \
+                    -e SECRET_KEY='$SECRET_KEY' \
                     -e DATABASE_URL=$DB_URL \
                     -e ALLOWED_HOSTS=$HOSTS
                     '''
