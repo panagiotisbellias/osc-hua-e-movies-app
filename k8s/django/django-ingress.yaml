@@ -4,7 +4,7 @@ metadata:
   name: django-ingress
 spec:
   rules:
-  - host: "movies.k8s.bellias.cloudns.cl"
+  - host: "movies.bellias.cloudns.cl"
     http:
       paths:
       - path: /
