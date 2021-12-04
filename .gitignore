@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# k8s helm testing
+todo_helm.txt
+
 # C extensions
 *.so
 

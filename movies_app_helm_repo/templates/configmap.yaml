@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: movies-app-configmap-{{ .Release.Name }}
+data
+  myvar: {{ .Values.myvar }}
+
