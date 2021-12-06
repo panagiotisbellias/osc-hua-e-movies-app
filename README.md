@@ -223,7 +223,40 @@ you can ensure that the connection is established.
 
 ### Kubernetes Entities
 
-Find instructions [here](https://docs.google.com/document/d/1k6Evhb-exS7WoEJLVttFEdrooXi0j45jJ0h6HR88qRc/edit?usp=sharing)
+Find instructions [here](https://docs.google.com/document/d/e/2PACX-1vRwWdOYJMMQxlkjrnOns3QajbgZ_tA0zsiUNw1IPUkaDoiJ32-UDPhQ2rQUnB-oTH_gFRFn4vyVShFb/pub)
+
+### Helm Deployment
+
+#### Install Helm
+```bash
+curl -fsSL -o get_helm.sh \
+https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+helm version
+```
+
+#### Create helm chart
+```bash
+helm create <name-of-chart> #(e.g. movies_app_helm_repo)
+```
+Now, take the files under [k8s/django](k8s/django) folder and copy them inside the chart like below:
+```bash
+# we are in the project's root folder
+cp k8s/django/django-deployment.yaml movies_app_helm_repo/templates/deployment.yaml
+cp k8s/django/django-ingress.yaml movies_app_helm_repo/templates/ingress.yaml
+cp k8s/django/django-clip.yaml movies_app_helm_repo/templates/service.yaml
+```
+
+#### Configure sensitive values
+```bash
+cp movies_app_helm_repo/values.yaml.example movies_app_helm_repo/values.yaml
+```
+and edit the file like this
+
+```vim
+
+```
 
 ## Creating Domain Names
 * [Go here](https://www.cloudns.net/) to make a free account.

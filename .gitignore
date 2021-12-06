@@ -3,9 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# k8s helm testing
-todo_helm.txt
-
 # C extensions
 *.so
 
@@ -141,3 +138,6 @@ assets/nginx/certs/*.crt
 assets/nginx/certs/*.crt:Zone.Identifier
 assets/nginx/certs/*.key
 assets/nginx/certs/*.key:Zone.Identifier
+
+# Helm sensitive values
+values.yaml
