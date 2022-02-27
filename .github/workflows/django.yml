@@ -31,4 +31,4 @@ jobs:
         cp movies_app/.env.example movies_app/.env
     - name: Run Tests
       run: |
-        python manage.py test
+        ./manage.py test
