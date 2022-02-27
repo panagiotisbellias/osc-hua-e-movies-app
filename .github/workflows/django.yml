@@ -27,7 +27,7 @@ jobs:
         pip install -r requirements.txt
     - name: Configure Environmental Variables
       run: |
-        cd movies-app
+        cd movies_app
         cp movies_app/.env.example movies_app/.env
     - name: Run Tests
       run: |
